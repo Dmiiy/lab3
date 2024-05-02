@@ -1,4 +1,3 @@
-
 #include <cstdio>
 #include <iostream>
 #include <cstdlib>
@@ -6,7 +5,6 @@
 #include <fcntl.h>
 
 #include "ArraySequence.h"
-#include "ArraySequenceImmutable.h"
 #include "LinkedListSequence.h"
 #include "Common.h"
 #include "Sequence.h"
@@ -239,94 +237,6 @@ void dynamic_array_findSubSequence() {
     }
 }
 
-void dynamic_array_immutable_concat() {
-    wprintf(L"Конкатенация двух массивов\n");
-    wprintf(L"Введите из скольки символов будет состоять 1 последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите из скольки символов будет состоять 2 последовательность: ");
-    int length2;
-    wcin >> length2;
-    int data2[length];
-    for (int i = 0; i < length2; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data2[i];
-    }
-    try {
-        ArraySequence<int> arraySequence1(data, length);
-        ArraySequence<int> arraySequence2(data2, length2);
-        Sequence<int> *result = arraySequence1.concat(&arraySequence2);
-        result->print();
-        delete result;
-
-        wprintf(L"\n");
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_immutable_getSubSequence() {
-    wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    try {
-
-        wcout << L"Введите начальный индекс: ";
-        int startIndex;
-        wcin >> startIndex;
-        wcout << L"Введите конечный индекс: ";
-        int endIndex;
-        wcin >> endIndex;
-        ArraySequence<int> arraySequence(data, length);
-        Sequence<int> *result = arraySequence.getSubsequence(startIndex, endIndex);
-        result->print();
-        delete result;
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_immutable_findSubSequence() {
-    wprintf(L"Поиск на вхождение подпоследовательности\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Ведите из скольки символов будет состоять подпоследовательность: ");
-    int subLength;
-    wcin >> subLength;
-    int subData[subLength];
-    for (int i = 0; i < subLength; i++) {
-        wcout << L"Введите элемент подпоследовательности под индексом " << i << L": ";
-        wcin >> subData[i];
-    }
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        ArraySequence<int> subSequence(subData, subLength);
-        int index = arraySequence.findSubsequence(subSequence);
-        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
 // Основные операции
 void main_menu_for_linked_list() {
     MenuItem menu_list[] = {
@@ -345,13 +255,6 @@ void main_menu_for_dynamic_array() {
             {L"Поиск на вхождение подпоследовательности", dynamic_array_findSubSequence}};
     menuLoop(L"Возможные операции", _countof(menu_array), menu_array);
 }
-void main_menu_for_dynamic_array_immutable() {
-    MenuItem menu_array_immutable[] = {
-            {L"Конкатенация двух массивов", dynamic_array_immutable_concat},
-            {L"Извлечение подпоследовательности (по заданным индексам)", dynamic_array_immutable_getSubSequence},
-            {L"Поиск на вхождение подпоследовательности", dynamic_array_immutable_findSubSequence}};
-    menuLoop(L"Возможные операции", _countof(menu_array_immutable), menu_array_immutable);
-}
 
 // Основная программа
 int main() {
@@ -366,8 +269,7 @@ int main() {
     wprintf(L"== Тестирование операций ==\n");
 
     MenuItem menu[] = {{L"Связанные списки", main_menu_for_linked_list},
-                       {L"Динамические массивы", main_menu_for_dynamic_array},
-                       {L"Динамические массивы Immutable", main_menu_for_dynamic_array_immutable}};
+                       {L"Динамические массивы", main_menu_for_dynamic_array}};
 
     try {
         menuLoop(L"Выберите тип элементов", _countof(menu), menu);
