@@ -30,10 +30,10 @@ void menuLoop(const wchar_t *title, int N, MenuItem menu[]) {
             std::wcout << L"Вы выбрали: " << menu[index].name << std::endl;
             menu[index].f();  // Вызываем функцию
             std::wcout << std::endl;
-        }else if(choice == 0) {
+        } else if (choice == 0) {
             wprintf(L"Выбран %d => выход\n", choice);
             return;
-        } else{
+        } else {
             wprintf(L"Пункта меню %d нет => повторите выбор\n", choice);
         }
     }

@@ -4,8 +4,6 @@
 #include "../LinkedList.h"
 #include "../LinkedListSequence.h"
 #include "lib/googletest/include/gtest/gtest.h"
-#include "../ArraySequenceImmutable.h"
-
 
 TEST(DynamicArray, basic_operations) {
     // Создаём массив на 3 элемента

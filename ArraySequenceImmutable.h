@@ -6,32 +6,40 @@
 #include "DynamicArray.h"
 #include "Sequence.h"
 
-template <class T>
+template<class T>
 class ArraySequenceImmutable : public Sequence<T> {
 private:
     DynamicArray<T> data;
 public:
     //Создание объекта
     ArraySequenceImmutable(T *data, int count) : data(data, count) {}
+
     ArraySequenceImmutable() : data() {};
+
     explicit ArraySequenceImmutable(const DynamicArray<T> &array) : data(array) {};
+
     //Декомпозиция
     T getFirst() const override {
         return data.get(0);
     };
+
     T getLast() const override {
         return data.get(data.getSize() - 1);
     };
+
     T get(int index) const override {
         return data.get(index);
     };
+
     //Перегруженные операторы
     T operator[](int i) const override {
         return data[i];
     }
+
     T &operator[](int i) override {
         return data[i];
     }
+
     Sequence<T> *getSubsequence(int startIndex, int endIndex) const override {
         if (startIndex > endIndex) {
             throw IndexOutOfRange(string("Index startIndex <= endIndex"));
@@ -43,11 +51,13 @@ public:
         }
         return new ArraySequenceImmutable<T>(da);
     }
+
     int getLength() const override {
         return data.getSize();
     }
+
     //Операции
-    Sequence<T> * append(T item) override {
+    Sequence<T> *append(T item) override {
         int size = data.getSize();
         DynamicArray<T> da(size);
         for (int i = 0; i < size; i++) {
@@ -56,8 +66,9 @@ public:
         da.append(item);
         return new ArraySequenceImmutable<T>(da);
     };
-    Sequence<T> * prepend(T item) override {
-        int size = data.getSize() ;
+
+    Sequence<T> *prepend(T item) override {
+        int size = data.getSize();
         DynamicArray<T> da(size);
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
@@ -66,8 +77,9 @@ public:
         return new ArraySequenceImmutable<T>(da);
 
     };
-    Sequence<T> * insertAt(T item, int index) override {
-        int size = data.getSize() ;
+
+    Sequence<T> *insertAt(T item, int index) override {
+        int size = data.getSize();
         DynamicArray<T> da(size);
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
@@ -75,16 +87,18 @@ public:
         da.insertAt(item, index);
         return new ArraySequenceImmutable<T>(da);
     };
+
     Sequence<T> *concat(Sequence<T> *list) override {
-        auto *result = new ArraySequenceImmutable<T>(this->data);
+        auto *result = new ArraySequence<T>(this->data);
         result->data.resize(getLength() + list->getLength());
         for (int i = 0; i < list->getLength(); i++) {
             result->data.set(getLength() + i, list->get(i));
         }
         return result;
     };
-    Sequence<T> * removeAt(int index) override {
-        int size = data.getSize() ;
+
+    Sequence<T> *removeAt(int index) override {
+        int size = data.getSize();
         DynamicArray<T> da(size);
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
@@ -92,9 +106,11 @@ public:
         da.removeAt(index);
         return new ArraySequenceImmutable<T>(da);
     }
+
     void print() const override {
         data.print();
     }
+
     //Виртуальный деструктор
     virtual ~ArraySequenceImmutable<T>() = default;
 
@@ -105,6 +121,7 @@ public:
         }
         return res;
     }
+
     Sequence<T> *where(bool (*h)(T)) const override {
         auto *res = new ArraySequenceImmutable<T>;
         for (int i = 0; i < getLength(); i++) {
@@ -115,6 +132,7 @@ public:
         }
         return res;
     }
+
     T reduce(T (*f)(T, T)) const override {
         T result = data.get(0);
         for (int i = 1; i < data.getSize(); i++) {

@@ -148,6 +148,107 @@ void linked_list_findSubSequence() {
     }
 }
 
+void linked_list_append() {
+    wprintf(L"Добавление элемента в конец списка\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num;
+    wcin >> num;
+
+    try {
+        LinkedListSequence<int> linkedListSequence(data, length);
+        linkedListSequence.append(num);
+        linkedListSequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void linked_list_prepend() {
+    wprintf(L"Добавление элемента в начало списка\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num;
+    wcin >> num;
+
+    try {
+        LinkedListSequence<int> linkedListSequence(data, length);
+        linkedListSequence.prepend(num);
+        linkedListSequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void linked_list_insertat() {
+    wprintf(L"Добавление элемента в список по индексу\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num, index;
+    wcin >> num;
+
+    wprintf(L"Введите индекс куда вы хотите вставить число: ");
+    wcin >> index;
+    try {
+        LinkedListSequence<int> linkedListSequence(data, length);
+        linkedListSequence.insertAt(num, index);
+        linkedListSequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void linked_list_removeat() {
+    wprintf(L"Удаление элемента в списке по индексу\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    int index;
+    wprintf(L"Введите индекс числа которое вы хотите удалить : ");
+    wcin >> index;
+    try {
+        LinkedListSequence<int> linkedListSequence(data, length);
+        linkedListSequence.removeAt(index);
+        linkedListSequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
 void dynamic_array_concat() {
     wprintf(L"Конкатенация двух массивов\n");
     wprintf(L"Введите из скольки символов будет состоять 1 последовательность: ");
@@ -237,29 +338,137 @@ void dynamic_array_findSubSequence() {
     }
 }
 
+void dynamic_array_append() {
+    wprintf(L"Добавление элемента в конец массива\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num;
+    wcin >> num;
+
+    try {
+        ArraySequence<int> arraySequence(data, length);
+        arraySequence.append(num);
+        arraySequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void dynamic_array_prepend() {
+    wprintf(L"Добавление элемента в начало массива\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num;
+    wcin >> num;
+
+    try {
+        ArraySequence<int> arraySequence(data, length);
+        arraySequence.prepend(num);
+        arraySequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void dynamic_array_insertat() {
+    wprintf(L"Добавление элемента в массив по индексу\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    wprintf(L"Введите число которое вы хотите вставить: ");
+    int num, index;
+    wcin >> num;
+
+    wprintf(L"Введите индекс куда вы хотите вставить число: ");
+    wcin >> index;
+    try {
+        ArraySequence<int> arraySequence(data, length);
+        arraySequence.insertAt(num, index);
+        arraySequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+void dynamic_array_removeat() {
+    wprintf(L"Удаление элемента в массива по индексу\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    int index;
+    wprintf(L"Введите индекс числа которое вы хотите удалить : ");
+    wcin >> index;
+    try {
+        ArraySequence<int> arraySequence(data, length);
+        arraySequence.removeAt(index);
+        arraySequence.print();
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
 // Основные операции
 void main_menu_for_linked_list() {
     MenuItem menu_list[] = {
-            {L"Применение функции map, where, reduce", apply_map_where_reduce_linked_list},
-            {L"Конкатенация двух списков", linked_list_concat},
+            {L"Применение функции map, where, reduce",                   apply_map_where_reduce_linked_list},
+            {L"Конкатенация двух списков",                               linked_list_concat},
             {L"Извлечение подпоследовательности (по заданным индексам)", linked_list_getSubSequence},
-            {L"Поиск на вхождение подпоследовательности", linked_list_findSubSequence}};
+            {L"Поиск на вхождение подпоследовательности",                linked_list_findSubSequence},
+            {L"Добавление элемента в конец списка",                      linked_list_append},
+            {L"Добавление элемента в начало списка",                     linked_list_prepend},
+            {L"Добавление элемента в список по индексу",                 linked_list_insertat},
+            {L"Удаление элемента списка по индексу",                     linked_list_removeat}};
     menuLoop(L"Возможные операции", _countof(menu_list), menu_list);
 }
 
 
 void main_menu_for_dynamic_array() {
     MenuItem menu_array[] = {
-            {L"Конкатенация двух массивов", dynamic_array_concat},
+            {L"Конкатенация двух массивов",                              dynamic_array_concat},
             {L"Извлечение подпоследовательности (по заданным индексам)", dynamic_array_getSubSequence},
-            {L"Поиск на вхождение подпоследовательности", dynamic_array_findSubSequence}};
+            {L"Поиск на вхождение подпоследовательности",                dynamic_array_findSubSequence},
+            {L"Добавление элемента в конец массива",                     dynamic_array_append},
+            {L"Добавление элемента в начало массива",                    dynamic_array_prepend},
+            {L"Добавление элемента в массив по индексу",                 dynamic_array_insertat},
+            {L"Удаление элемента массива по индексу",                    dynamic_array_removeat}};
     menuLoop(L"Возможные операции", _countof(menu_array), menu_array);
 }
 
 // Основная программа
 int main() {
     // Задаём кодировку UTF-16 для всего вывода в программе
-    // Все символы и строки будут wchar_t
 #if WIN32 || WIN64
     _setmode(_fileno(stdout), _O_U16TEXT);
     _setmode(_fileno(stdin), _O_U16TEXT);
@@ -268,7 +477,7 @@ int main() {
 
     wprintf(L"== Тестирование операций ==\n");
 
-    MenuItem menu[] = {{L"Связанные списки", main_menu_for_linked_list},
+    MenuItem menu[] = {{L"Связанные списки",     main_menu_for_linked_list},
                        {L"Динамические массивы", main_menu_for_dynamic_array}};
 
     try {

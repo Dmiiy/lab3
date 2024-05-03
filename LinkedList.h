@@ -5,12 +5,13 @@
 
 #include "Common.h"
 
-template <class T>
+template<class T>
 class LinkedList {
     struct Node {
         T value;
         Node *prev;
         Node *next;
+
         Node(T value, Node *prev = nullptr, Node *next = nullptr) : value(value), prev(prev), next(next) {}
     };
 
@@ -25,6 +26,7 @@ public:
             append(items[i]);
         }
     }
+
     LinkedList() {};
 
     // Копирующий конструктор
@@ -36,6 +38,7 @@ public:
             last = node;
         }
     }
+
     //Деструктор
     ~LinkedList() {
         while (first != nullptr) {
@@ -45,18 +48,22 @@ public:
         }
         last = nullptr;
     }
+
     //Декомпозиция
     T getFirst() const {
         if (first == nullptr) throw IndexOutOfRange("List is empty");
         return first->value;
     }
+
     T getLast() const {
         if (last == nullptr) throw IndexOutOfRange("List is empty");
         return last->value;
     }
+
     T &get(int index) const {
         if (index < 0)
-            throw IndexOutOfRange(string("Index ") + to_string(index) + " out of range 0.." + to_string(getLength() - 1));
+            throw IndexOutOfRange(
+                    string("Index ") + to_string(index) + " out of range 0.." + to_string(getLength() - 1));
         int idx = 0;
         for (Node *n = first; n != nullptr; n = n->next) {
             if (idx == index) return n->value;
@@ -64,13 +71,16 @@ public:
         }
         throw IndexOutOfRange(string("Index ") + to_string(index) + " out of range 0.." + to_string(getLength() - 1));
     }
+
     // Перегруженные операторы
     T operator[](int i) const {
         return get(i);
     }
+
     T &operator[](int i) {
         return get(i);
     }
+
     LinkedList<T> *getSubList(int startIndex, int endIndex) {
         if (startIndex < 0)
             throw IndexOutOfRange(string("startIndex ") + to_string(startIndex) + " out of range 0.." +
@@ -89,9 +99,11 @@ public:
         }
         return subList;
     }
+
     int getLength() const {
         return size;
     }
+
     //Операции
     void append(T item) {
         auto *n = new Node(item, last, nullptr);
@@ -104,6 +116,7 @@ public:
         last = n;
         size++;
     }
+
     void prepend(T item) {
         auto *node = new Node(item, nullptr, first);
         if (first != nullptr) {
@@ -115,6 +128,7 @@ public:
         }
         size++;
     }
+
     void insertAt(T item, int index) {
         if (index < 0) {
             throw IndexOutOfRange(string("insertAt index=") + to_string(index) + " < 0");
@@ -139,6 +153,7 @@ public:
         }
         size++;
     }
+
     LinkedList<T> *concat(LinkedList<T> *list) {
         auto *res = new LinkedList<T>(*this);
         for (Node *n = list->first; n != nullptr; n = n->next) {
@@ -146,6 +161,7 @@ public:
         }
         return res;
     }
+
     void removeAt(int index) {
         if (index < 0) {
             throw IndexOutOfRange(string("removeAt index=") + to_string(index) + " < 0");
@@ -173,13 +189,56 @@ public:
         delete toDelete;
         size--;
     }
-    void print() const{
+
+    void print() const {
         wcout << L"LinkedList (size = " << getLength() << L")";
         for (Node *n = first; n != nullptr; n = n->next) {
             wcout << L" " << n->value;
         }
         wcout << endl;
     };
+    //Итератор
+//    struct Iterator {
+//        using iterator_category = std::forward_iterator_tag;
+//        using difference_type = std::ptrdiff_t;
+//        using value_type = T;
+//        using pointer = T *;
+//        using reference = T &;
+//
+//        Iterator(Node *ptr) : m_ptr(ptr) {}
+//
+//        reference operator*() const {
+//            return m_ptr->value;
+//        }
+//        pointer operator->() {
+//            return m_ptr->value;
+//        }
+//        Iterator &operator++() {
+//            m_ptr = m_ptr->next;
+//            return *this;
+//        }
+//        Iterator operator++(int) {
+//            Iterator tmp = *this;
+//            ++(*this);
+//            return tmp;
+//        }
+//        friend bool operator==(const Iterator &a, const Iterator &b) {
+//            return a.m_ptr == b.m_ptr;
+//        };
+//        friend bool operator!=(const Iterator &a, const Iterator &b) {
+//            return a.m_ptr != b.m_ptr;
+//        };
+//
+//    private:
+//        Node *m_ptr;
+//    };
+//
+//    Iterator begin() {
+//        return Iterator(first);
+//    }
+//    Iterator end() {
+//        return Iterator(nullptr);
+//    }
 };
 
 #endif

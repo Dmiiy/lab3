@@ -13,5 +13,6 @@ add_executable(lab2
         main.cpp
         menu.h
         ArraySequenceImmutable.h
+        SequenceImmutable.h
 )
 add_subdirectory(Google_tests)
