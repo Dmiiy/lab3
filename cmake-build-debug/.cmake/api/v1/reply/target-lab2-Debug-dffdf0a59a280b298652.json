@@ -104,7 +104,8 @@
 				4,
 				5,
 				7,
-				8
+				8,
+				9
 			]
 		},
 		{
@@ -161,6 +162,11 @@
 		{
 			"backtrace" : 2,
 			"path" : "ArraySequenceImmutable.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"path" : "SequenceImmutable.h",
 			"sourceGroupIndex" : 0
 		}
 	],

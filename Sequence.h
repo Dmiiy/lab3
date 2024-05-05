@@ -32,8 +32,6 @@ public:
 
     virtual Sequence<T> *concat(Sequence<T> *list) = 0;
 
-    virtual void print() const = 0;
-
     virtual int findSubsequence(Sequence<T> &subSequence) {
         int subSeqLen = subSequence.getLength();
         for (int start = 0; start <= getLength() - subSeqLen; start++) {

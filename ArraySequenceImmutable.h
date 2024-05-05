@@ -63,7 +63,9 @@ public:
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
         }
-        da.append(item);
+        data.resize(size + 1);
+        size = data.getSize();
+        data.set(size - 1, item);
         return new ArraySequenceImmutable<T>(da);
     };
 
@@ -107,9 +109,7 @@ public:
         return new ArraySequenceImmutable<T>(da);
     }
 
-    void print() const override {
-        data.print();
-    }
+
 
     //Виртуальный деструктор
     virtual ~ArraySequenceImmutable<T>() = default;

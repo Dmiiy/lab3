@@ -108,51 +108,14 @@ public:
         delete[] defined;
         defined = newDefined;
     }
-
-    void append(T item) {
-        resize(size + 1);
-        set(size - 1, item);
-    }
-
-    void prepend(T item) {
-        resize(size + 1);
-        for (int i = size - 1; i >= 1; i--) {
-            data[i] = data[i - 1];
+    void define_resize(int newSize) {
+        for (int i = newSize - 1; i >= 1; i--) {
             defined[i] = defined[i - 1];
         }
-        data[0] = item;
-        defined[0] = true;
     }
 
-    void insertAt(T item, int index) {
-        resize(size + 1);
-        checkIndex(index);
-        for (int i = size - 1; i > index; i--) {
-            data[i] = data[i - 1];
-            defined[i] = defined[i - 1];
-        }
-        set(index, item);
-    };
-
-    void removeAt(const int index) {
-        checkIndex(index);
-        for (int i = index + 1; i < size; i++) {
-            data[i - 1] = data[i];
-            defined[i - 1] = defined[i];
-        }
-        resize(size - 1);
-    }
-
-    // Печать динамического массива
-    void print() const {
-        wcout << L"DynamicArray size = " << size << L":";
-        for (int i = 0; i < size; i++) {
-            if (defined[i])
-                wcout << L" " << data[i];
-            else
-                wcout << L" *";
-        }
-        wcout << endl;
+    void define_set(int index, bool value) {
+        defined[index] = value;
     }
 };
 

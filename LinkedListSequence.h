@@ -89,10 +89,6 @@ public:
         data.removeAt(index);
     }
 
-    void print() const override {
-        data.print();
-    }
-
     //Деструктор
     virtual ~LinkedListSequence() = default;
 

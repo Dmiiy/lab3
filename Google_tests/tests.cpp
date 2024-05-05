@@ -7,8 +7,9 @@
 
 TEST(DynamicArray, basic_operations) {
     // Создаём массив на 3 элемента
-    DynamicArray<int> da(3);
-    ASSERT_EQ(3, da.getSize());  // Проверяем что размер 3
+    DynamicArray<int> array(3);
+    ArraySequence<int> da(array);
+    ASSERT_EQ(3, da.getLength());  // Проверяем что размер 3
     try {
         da.get(0);
         FAIL() << "Should be IndexOutOfRange";
@@ -22,9 +23,9 @@ TEST(DynamicArray, basic_operations) {
         ASSERT_STREQ("Element with index 2 not defined", ex.what());
     }
     // Задаём значение всех элементов
-    da.set(0, 11);
-    da.set(1, 22);
-    da.set(2, 33);
+    da[0] = 11;
+    da[1] = 22;
+    da[2] = 33;
     // Проверяем значение всех элементов массива
     ASSERT_EQ(11, da.get(0));
     ASSERT_EQ(22, da.get(1));
@@ -41,8 +42,8 @@ TEST(DynamicArray, basic_operations) {
         ASSERT_STREQ("Index -1 out of range 0..2", ex.what());
     }
     // Проверяем что на отрицательный индекс генерируется исключение для операции set
-    try {
-        da.set(-1, 122);
+try {
+        da[-1] = 101;
         FAIL() << "Should be IndexOutOfRange";
     } catch (IndexOutOfRange &ex) {
         ASSERT_STREQ("Index -1 out of range 0..2", ex.what());
@@ -62,22 +63,44 @@ TEST(DynamicArray, basic_operations) {
     }
     // Меняем значения по индексу
     da[0] = 101;
-    ASSERT_EQ(3, da.getSize());
+    ASSERT_EQ(3, da.getLength());
     ASSERT_EQ(101, da[0]);
     ASSERT_EQ(22, da[1]);
     ASSERT_EQ(33, da[2]);
     // Вставка элемента
     da.insertAt(1, 0);
-    ASSERT_EQ(4, da.getSize());
+    ASSERT_EQ(4, da.getLength());
     ASSERT_EQ(1, da[0]);
     ASSERT_EQ(101, da[1]);
     ASSERT_EQ(22, da[2]);
     ASSERT_EQ(33, da[3]);
     // Перегрузка операторов
     da[0] = 2 * da[1] + da[2];             // Более наглядна
-    da.set(0, 2 * da.get(1) + da.get(2));  // чем такая
+     // чем такая
 }
+TEST(LinkedList, Iterator) {  // Итератор
+    int items[] = {11, 22, 33};
+    LinkedList<int> list(items, _countof(items));  // Список целых чисел
+    // Проверяем длину списков
+    ASSERT_EQ(3, list.getLength());
 
+    auto it = list.begin();
+    ASSERT_EQ(11, *it);
+    it++;
+    ASSERT_EQ(22, *it);
+    ++it;
+    ASSERT_EQ(33, *it);
+    it++;
+    ASSERT_EQ(list.end(), it);
+
+    for (auto it = list.begin(), end = list.end(); it != end; ++it) {
+        const auto i = *it;
+        std::cout << i << "\n";
+    }
+    for (int x : list) {
+        cout << x << endl;
+    }
+}
 TEST(DynamicArray, undefined_elements) {
     DynamicArray<int> da(4);
     try {
@@ -108,18 +131,18 @@ TEST(DynamicArray, undefined_elements) {
 
 
 
-TEST(DynamicArray, removeAt) {
+TEST(ArraySequence, removeAt) {
     int data[] = {11, 22, 33};
-    DynamicArray<int> da(data, _countof(data));
+    ArraySequence<int> da(data, _countof(data));
     da.removeAt(1);
-    ASSERT_EQ(2, da.getSize());
+    ASSERT_EQ(2, da.getLength());
     ASSERT_EQ(11, da[0]);
     ASSERT_EQ(33, da[1]);
     da.removeAt(1);
-    ASSERT_EQ(1, da.getSize());
+    ASSERT_EQ(1, da.getLength());
     ASSERT_EQ(11, da[0]);
     da.removeAt(0);
-    ASSERT_EQ(0, da.getSize());
+    ASSERT_EQ(0, da.getLength());
 }
 
 TEST(DynamicArray, resize) {

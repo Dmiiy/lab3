@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <string>
 #include <fcntl.h>
+#include <fstream>
+#include <vector>
+#include <iterator>
 
 #include "ArraySequence.h"
 #include "LinkedListSequence.h"
@@ -10,6 +13,20 @@
 #include "Sequence.h"
 #include "menu.h"
 
+void print_sequence(Sequence<int> *sequence) {
+    std::vector<wchar_t> mas;
+
+    std::wofstream os("C:\\Users\\dimak\\Desktop\\lab2.txt");
+    mas.push_back(L'П');
+    wcout << L"  Последовательность: ";
+    for (int i = 0; i < sequence->getLength(); i++) {
+        wcout << to_wstring(sequence->get(i)) << L" ";
+        mas.push_back(sequence->get(i));
+    }
+    std::ostream_iterator<wchar_t, wchar_t> it(os, L" ");
+    std::copy(mas.cbegin(), mas.cend(), it);
+    wcout << L"\n";
+}
 
 int map_function(int x) {
     return x * x;
@@ -28,7 +45,30 @@ int reduce_function(int a, int b) {
     return result;
 }
 
+void iterator_linked_list() {
+    wprintf(L"Итератор\n");
+    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
+    int length;
+    wcin >> length;
+    int data[length];
+    for (int i = 0; i < length; i++) {
+        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
+        wcin >> data[i];
+    }
+    try {
+        LinkedList<int> linkedList(data, length);
+        auto it = linkedList.begin();
+        wprintf(L"Вы ввели последовательность: ");
+        for (int i = 0; i < length; i++) {
+            wcout << L"Элемент под индексом " << i << L": " << *it << L"\n";
+            it++;
+        }
 
+        wprintf(L"\n");
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
 void apply_map_where_reduce_linked_list() {
     wprintf(L"Применение функций map, where, reduce\n");
     wprintf(L"Введите из скольки символов будет состоять последовательность: ");
@@ -40,15 +80,16 @@ void apply_map_where_reduce_linked_list() {
         wcin >> data[i];
     }
     LinkedListSequence<int> linkedListSequence(data, length);
-
+    wprintf(L"Вы ввели последовательность: ");
+    print_sequence(&linkedListSequence);
     wprintf(L"Применяем операцию map\n");
     Sequence<int> *mapRes = linkedListSequence.map(map_function);
-    mapRes->print();
+    print_sequence(mapRes);
     delete mapRes;    // Очищаем память
 
     wprintf(L"Применяем операцию where\n");
     Sequence<int> *whereRes = linkedListSequence.where(where_function);
-    whereRes->print();
+    print_sequence(whereRes);
     delete whereRes;  // Очищаем память
 
     wprintf(L"Применяем операцию reduce\n");
@@ -81,7 +122,11 @@ void linked_list_concat() {
         LinkedListSequence<int> linkedListSequence1(data, length);
         LinkedListSequence<int> linkedListSequence2(data2, length2);
         Sequence<int> *result = linkedListSequence1.concat(&linkedListSequence2);
-        result->print();
+        wprintf(L"Вы ввели последовательности: ");
+        print_sequence(&linkedListSequence1);
+        print_sequence(&linkedListSequence2);
+        wprintf(L"Результат конкатенации: ");
+        print_sequence(result);
         delete result;
 
         wprintf(L"\n");
@@ -109,8 +154,11 @@ void linked_list_getSubSequence() {
         int endIndex;
         wcin >> endIndex;
         LinkedListSequence<int> linkedListSequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Полученная подпоследовательность: ");
         Sequence<int> *result = linkedListSequence.getSubsequence(startIndex, endIndex);
-        result->print();
+        print_sequence(result);
         delete result;
 
         wcout << endl;
@@ -141,6 +189,10 @@ void linked_list_findSubSequence() {
     try {
         LinkedListSequence<int> linkedListSequence(data, length);
         LinkedListSequence<int> subSequence(subData, subLength);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Вы ввели подпоследовательность: ");
+        print_sequence(&subSequence);
         int index = linkedListSequence.findSubsequence(subSequence);
         wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -164,8 +216,11 @@ void linked_list_append() {
 
     try {
         LinkedListSequence<int> linkedListSequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Последовательность после добавления: ");
         linkedListSequence.append(num);
-        linkedListSequence.print();
+        print_sequence(&linkedListSequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -189,8 +244,11 @@ void linked_list_prepend() {
 
     try {
         LinkedListSequence<int> linkedListSequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Последовательность после добавления: ");
         linkedListSequence.prepend(num);
-        linkedListSequence.print();
+        print_sequence(&linkedListSequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -216,9 +274,11 @@ void linked_list_insertat() {
     wcin >> index;
     try {
         LinkedListSequence<int> linkedListSequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Последовательность после добавления: ");
         linkedListSequence.insertAt(num, index);
-        linkedListSequence.print();
-
+        print_sequence(&linkedListSequence);
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
@@ -240,9 +300,11 @@ void linked_list_removeat() {
     wcin >> index;
     try {
         LinkedListSequence<int> linkedListSequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&linkedListSequence);
+        wprintf(L"Последовательность после удаления: ");
         linkedListSequence.removeAt(index);
-        linkedListSequence.print();
-
+        print_sequence(&linkedListSequence);
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
@@ -271,7 +333,11 @@ void dynamic_array_concat() {
         ArraySequence<int> arraySequence1(data, length);
         ArraySequence<int> arraySequence2(data2, length2);
         Sequence<int> *result = arraySequence1.concat(&arraySequence2);
-        result->print();
+        wprintf(L"Вы ввели последовательности: ");
+        print_sequence(&arraySequence1);
+        print_sequence(&arraySequence2);
+        wprintf(L"Последовательность после конкатенации: ");
+        print_sequence(result);
         delete result;
 
         wprintf(L"\n");
@@ -300,7 +366,10 @@ void dynamic_array_getSubSequence() {
         wcin >> endIndex;
         ArraySequence<int> arraySequence(data, length);
         Sequence<int> *result = arraySequence.getSubsequence(startIndex, endIndex);
-        result->print();
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Полученная подпоследовательность: ");
+        print_sequence(result);
         delete result;
 
         wcout << endl;
@@ -331,6 +400,10 @@ void dynamic_array_findSubSequence() {
     try {
         ArraySequence<int> arraySequence(data, length);
         ArraySequence<int> subSequence(subData, subLength);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Вы ввели подпоследовательность: ");
+        print_sequence(&subSequence);
         int index = arraySequence.findSubsequence(subSequence);
         wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -354,8 +427,11 @@ void dynamic_array_append() {
 
     try {
         ArraySequence<int> arraySequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Последовательность после добавления: ");
         arraySequence.append(num);
-        arraySequence.print();
+        print_sequence(&arraySequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -379,8 +455,11 @@ void dynamic_array_prepend() {
 
     try {
         ArraySequence<int> arraySequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Последовательность после добавления: ");
         arraySequence.prepend(num);
-        arraySequence.print();
+        print_sequence(&arraySequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -406,8 +485,11 @@ void dynamic_array_insertat() {
     wcin >> index;
     try {
         ArraySequence<int> arraySequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Последовательность после добавления: ");
         arraySequence.insertAt(num, index);
-        arraySequence.print();
+        print_sequence(&arraySequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -430,8 +512,11 @@ void dynamic_array_removeat() {
     wcin >> index;
     try {
         ArraySequence<int> arraySequence(data, length);
+        wprintf(L"Вы ввели последовательность: ");
+        print_sequence(&arraySequence);
+        wprintf(L"Последовательность после удаления: ");
         arraySequence.removeAt(index);
-        arraySequence.print();
+        print_sequence(&arraySequence);
 
         wcout << endl;
     } catch (IndexOutOfRange &ex) {
@@ -449,7 +534,8 @@ void main_menu_for_linked_list() {
             {L"Добавление элемента в конец списка",                      linked_list_append},
             {L"Добавление элемента в начало списка",                     linked_list_prepend},
             {L"Добавление элемента в список по индексу",                 linked_list_insertat},
-            {L"Удаление элемента списка по индексу",                     linked_list_removeat}};
+            {L"Удаление элемента списка по индексу",                     linked_list_removeat},
+            {L"Итерация по списку",                     iterator_linked_list}};
     menuLoop(L"Возможные операции", _countof(menu_list), menu_list);
 }
 

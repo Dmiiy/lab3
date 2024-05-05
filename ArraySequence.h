@@ -58,15 +58,33 @@ public:
 
     //Операции
     void append(T item) override {
-        data.append(item);
+        int size = data.getSize();
+        data.resize(size + 1);
+        size = data.getSize();
+        data.set(size - 1, item);
     };
 
     void prepend(T item) override {
-        data.prepend(item);
+        int size = data.getSize();
+        data.resize(size + 1);
+        size = data.getSize();
+        data.define_resize(size);
+        for (int i = size - 1; i >= 1; i--) {
+            data[i] = data[i - 1];
+        }
+        data[0] = item;
+        data.define_set(0, true);
     };
 
     void insertAt(T item, int index) override {
-        data.insertAt(item, index);
+        int size=data.getSize();
+        data.resize(size + 1);
+        size=data.getSize();
+        data.define_resize(size);
+        for (int i = size - 1; i > index; i--) {
+            data[i] = data[i - 1];
+        }
+        data.set(index, item);
     };
 
     Sequence<T> *concat(Sequence<T> *list) override {
@@ -79,11 +97,12 @@ public:
     };
 
     void removeAt(int index) override {
-        data.removeAt(index);
-    }
-
-    void print() const override {
-        data.print();
+        int size = data.getSize();
+        for (int i = index + 1; i < size; i++) {
+            data[i - 1] = data[i];
+        }
+        data.define_resize(size);
+        data.resize(size - 1);
     }
 
     //Виртуальный деструктор

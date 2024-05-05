@@ -190,55 +190,48 @@ public:
         size--;
     }
 
-    void print() const {
-        wcout << L"LinkedList (size = " << getLength() << L")";
-        for (Node *n = first; n != nullptr; n = n->next) {
-            wcout << L" " << n->value;
-        }
-        wcout << endl;
-    };
     //Итератор
-//    struct Iterator {
-//        using iterator_category = std::forward_iterator_tag;
-//        using difference_type = std::ptrdiff_t;
-//        using value_type = T;
-//        using pointer = T *;
-//        using reference = T &;
-//
-//        Iterator(Node *ptr) : m_ptr(ptr) {}
-//
-//        reference operator*() const {
-//            return m_ptr->value;
-//        }
-//        pointer operator->() {
-//            return m_ptr->value;
-//        }
-//        Iterator &operator++() {
-//            m_ptr = m_ptr->next;
-//            return *this;
-//        }
-//        Iterator operator++(int) {
-//            Iterator tmp = *this;
-//            ++(*this);
-//            return tmp;
-//        }
-//        friend bool operator==(const Iterator &a, const Iterator &b) {
-//            return a.m_ptr == b.m_ptr;
-//        };
-//        friend bool operator!=(const Iterator &a, const Iterator &b) {
-//            return a.m_ptr != b.m_ptr;
-//        };
-//
-//    private:
-//        Node *m_ptr;
-//    };
-//
-//    Iterator begin() {
-//        return Iterator(first);
-//    }
-//    Iterator end() {
-//        return Iterator(nullptr);
-//    }
+    struct Iterator {
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = T *;
+        using reference = T &;
+
+        Iterator(Node *ptr) : m_ptr(ptr) {}
+
+        reference operator*() const {
+            return m_ptr->value;
+        }
+        pointer operator->() {
+            return m_ptr->value;
+        }
+        Iterator &operator++() {
+            m_ptr = m_ptr->next;
+            return *this;
+        }
+        Iterator operator++(int) {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+        friend bool operator==(const Iterator &a, const Iterator &b) {
+            return a.m_ptr == b.m_ptr;
+        };
+        friend bool operator!=(const Iterator &a, const Iterator &b) {
+            return a.m_ptr != b.m_ptr;
+        };
+
+    private:
+        Node *m_ptr;
+    };
+
+    Iterator begin() {
+        return Iterator(first);
+    }
+    Iterator end() {
+        return Iterator(nullptr);
+    }
 };
 
 #endif
