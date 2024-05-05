@@ -63,9 +63,9 @@ public:
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
         }
-        data.resize(size + 1);
-        size = data.getSize();
-        data.set(size - 1, item);
+        da.resize(size + 1);
+        size = da.getSize();
+        da.set(size - 1, item);
         return new ArraySequenceImmutable<T>(da);
     };
 
@@ -75,7 +75,14 @@ public:
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
         }
-        da.prepend(item);
+        da.resize(size + 1);
+        size = da.getSize();
+        da.define_resize(size);
+        for (int i = size - 1; i >= 1; i--) {
+            da[i] = da[i - 1];
+        }
+        da[0] = item;
+        da.define_set(0, true);
         return new ArraySequenceImmutable<T>(da);
 
     };
@@ -86,12 +93,18 @@ public:
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
         }
-        da.insertAt(item, index);
+        da.resize(size + 1);
+        size=da.getSize();
+        da.define_resize(size);
+        for (int i = size - 1; i > index; i--) {
+            da[i] = da[i - 1];
+        }
+        da.set(index, item);
         return new ArraySequenceImmutable<T>(da);
     };
 
     Sequence<T> *concat(Sequence<T> *list) override {
-        auto *result = new ArraySequence<T>(this->data);
+        auto *result = new ArraySequenceImmutable<T>(this->data);
         result->data.resize(getLength() + list->getLength());
         for (int i = 0; i < list->getLength(); i++) {
             result->data.set(getLength() + i, list->get(i));
@@ -105,7 +118,11 @@ public:
         for (int i = 0; i < size; i++) {
             da[i] = get(i);
         }
-        da.removeAt(index);
+        for (int i = index + 1; i < size; i++) {
+            da[i - 1] = da[i];
+        }
+        da.define_resize(size);
+        da.resize(size - 1);
         return new ArraySequenceImmutable<T>(da);
     }
 
