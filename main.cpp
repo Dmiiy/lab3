@@ -1,132 +1,106 @@
-#include <cstdio>
-#include <iostream>
-#include <cstdlib>
-#include <string>
+// Консольная программа для демонстрации
+
 #include <fcntl.h>
+
+#include <chrono>
+#include <complex>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cwchar>
 #include <fstream>
-#include <vector>
-#include <iterator>
 
-#include "ArraySequence.h"
-#include "LinkedListSequence.h"
+#include "arraysequence.h"
 #include "Common.h"
-#include "Sequence.h"
+#include "linkedlist.h"
+#include "linkedlistsequence.h"
 #include "menu.h"
+#include "stack.h"
+#include "CString.h"
 
-void print_sequence(Sequence<int> *sequence) {
-    std::vector<wchar_t> mas;
-
-    std::wofstream os("C:\\Users\\dimak\\Desktop\\lab2.txt");
-    mas.push_back(L'П');
-    wcout << L"  Последовательность: ";
-    for (int i = 0; i < sequence->getLength(); i++) {
-        wcout << to_wstring(sequence->get(i)) << L" ";
-        mas.push_back(sequence->get(i));
-    }
-    std::ostream_iterator<wchar_t, wchar_t> it(os, L" ");
-    std::copy(mas.cbegin(), mas.cend(), it);
-    wcout << L"\n";
-}
-
-int map_function(int x) {
+// Функиия, которую можно применить к каждому элементу последовательности
+template <class T>
+T map_function(T x) {
     return x * x;
 }
 
+wstring map_function(wstring x) { return x + L"!"; }
+
+// Фильтры для разных типов данных. Для каждого типа - своя
 bool where_function(int x) {
     bool result = (x % 2) == 0;
     wcout << L"  where: число " << x << L" чётное: " << result << endl;
     return result;
 }
 
+bool where_function(double x) {
+    bool result = abs(x) < 5;
+    wcout << L"  where: число |" << x << L"| < 5: " << result << endl;
+    return result;
+}
 
-int reduce_function(int a, int b) {
-    int result = a + b;
+bool where_function(complex<double> x) {
+    bool result = abs(x) < 5;
+    wcout << L"  where: число |" << x << L"| < 5: " << result << endl;
+    return result;
+}
+
+bool where_function(const wstring x) {
+    bool result = x.size() < 4;
+    wcout << L"  where: длина строки " << x << L" < 4: " << result << endl;
+    return result;
+}
+
+// Сложение для всех чисел (конкатенация для строк)
+template <class T>
+T reduce_function(T a, T b) {
+    T result = a + b;
     wcout << L"  reduce: " << a << L" + " << b << " = " << result << endl;
     return result;
 }
 
-void iterator_linked_list() {
-    wprintf(L"Итератор\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
+template <class T>
+void print_sequence(Sequence<T> *sequence) {
+    for (int i = 0; i < sequence->getLength(); i++) {
+        wcout << sequence->get(i) << L" ";
     }
-    try {
-        LinkedList<int> linkedList(data, length);
-        auto it = linkedList.begin();
-        wprintf(L"Вы ввели последовательность: ");
-        for (int i = 0; i < length; i++) {
-            wcout << L"Элемент под индексом " << i << L": " << *it << L"\n";
-            it++;
-        }
-
-        wprintf(L"\n");
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
+    wcout << endl;
 }
-void apply_map_where_reduce_linked_list() {
-    wprintf(L"Применение функций map, where, reduce\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    LinkedListSequence<int> linkedListSequence(data, length);
-    wprintf(L"Вы ввели последовательность: ");
-    print_sequence(&linkedListSequence);
+
+
+template <class T>
+void apply_map_where_reduce() {
+    wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
+
+    Stack<T> stack(new LinkedListSequence<T>, L"Ввод данных стека");  // Стек из элементом типа T
+
     wprintf(L"Применяем операцию map\n");
-    Sequence<int> *mapRes = linkedListSequence.map(map_function);
-    print_sequence(mapRes);
+    Stack<T> *mapRes = stack.map(map_function);
+    mapRes->print();  // Печатаем содержимое стека
     delete mapRes;    // Очищаем память
 
     wprintf(L"Применяем операцию where\n");
-    Sequence<int> *whereRes = linkedListSequence.where(where_function);
-    print_sequence(whereRes);
+    Stack<T> *whereRes = stack.where(where_function);
+    whereRes->print();
     delete whereRes;  // Очищаем память
 
-    wprintf(L"Применяем операцию reduce\n");
-    int reduceRes = linkedListSequence.reduce(reduce_function);
+    wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
+    T reduceRes = stack.reduce(reduce_function);
     wcout << L"Результат reduce: " << reduceRes << endl << endl;
 
     wprintf(L"\n");
 }
 
+template <class T>
+void stack_concat() {
+    wprintf(L"Конкатенация двух стеков\n");
 
-void linked_list_concat() {
-    wprintf(L"Конкатенация двух списков\n");
-    wprintf(L"Введите из скольки символов будет состоять 1 последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите из скольки символов будет состоять 2 последовательность: ");
-    int length2;
-    wcin >> length2;
-    int data2[length];
-    for (int i = 0; i < length2; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data2[i];
-    }
     try {
-        LinkedListSequence<int> linkedListSequence1(data, length);
-        LinkedListSequence<int> linkedListSequence2(data2, length2);
-        Sequence<int> *result = linkedListSequence1.concat(&linkedListSequence2);
-        wprintf(L"Вы ввели последовательности: ");
-        print_sequence(&linkedListSequence1);
-        print_sequence(&linkedListSequence2);
-        wprintf(L"Результат конкатенации: ");
-        print_sequence(result);
+        Stack<T> stack1(new LinkedListSequence<T>, L"Ввод элементов первого стека");
+        Stack<T> stack2(new LinkedListSequence<T>, L"Ввод элементов второго стека");
+
+        Stack<T> *result = stack1.concat(stack2);
+        result->print();
         delete result;
 
         wprintf(L"\n");
@@ -135,29 +109,19 @@ void linked_list_concat() {
     }
 }
 
-void linked_list_getSubSequence() {
+template <class T>
+void stack_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
     try {
-
+        Stack<T> stack(new LinkedListSequence<T>, L"Ввод элементов стека");
         wcout << L"Введите начальный индекс: ";
         int startIndex;
         wcin >> startIndex;
         wcout << L"Введите конечный индекс: ";
         int endIndex;
         wcin >> endIndex;
-        LinkedListSequence<int> linkedListSequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Полученная подпоследовательность: ");
-        Sequence<int> *result = linkedListSequence.getSubsequence(startIndex, endIndex);
+
+        Sequence<T> *result = stack.getSubsequence(startIndex, endIndex);
         print_sequence(result);
         delete result;
 
@@ -167,409 +131,80 @@ void linked_list_getSubSequence() {
     }
 }
 
-
-void linked_list_findSubSequence() {
+template <class T>
+void stack_findSubSequence() {
     wprintf(L"Поиск на вхождение подпоследовательности\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Ведите из скольки символов будет состоять подпоследовательность: ");
-    int subLength;
-    wcin >> subLength;
-    int subData[subLength];
-    for (int i = 0; i < subLength; i++) {
-        wcout << L"Введите элемент подпоследовательности под индексом " << i << L": ";
-        wcin >> subData[i];
-    }
+
     try {
-        LinkedListSequence<int> linkedListSequence(data, length);
-        LinkedListSequence<int> subSequence(subData, subLength);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Вы ввели подпоследовательность: ");
-        print_sequence(&subSequence);
-        int index = linkedListSequence.findSubsequence(subSequence);
-        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
+        LinkedListSequence<T> linkedListSequence;
+        Stack<T> stack(new LinkedListSequence<T>, L"Ввод элементов стека");
+        Stack<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
+
+        int index = stack.findSubsequence(subSequence);
+        wcout << L"Позиция подполедовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
 }
 
-void linked_list_append() {
-    wprintf(L"Добавление элемента в конец списка\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num;
-    wcin >> num;
+// Замеряем время работы стека
+void stackImplementationSpeed(Sequence<int> *sequence) {
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
 
-    try {
-        LinkedListSequence<int> linkedListSequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Последовательность после добавления: ");
-        linkedListSequence.append(num);
-        print_sequence(&linkedListSequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
+    Stack<int> stack(sequence);  // Создаём стек
+    const int numbers = 20000;   // Добавим числа
+    wcout << L"Количество элементов для тестирования: " << numbers << endl;
+    for (int i = 1; i <= numbers; i++) {
+        stack.push(i);
     }
+
+    auto end = chrono::steady_clock::now();  // Конец работы
+    auto elapsed_mcs = chrono::duration_cast<chrono::microseconds>(end - begin);
+    // Вычисляем разницу в секундах времени начала и окончания работы
+    const double t = elapsed_mcs.count() / 1e6;
+    // Выводим результат в секундах на экран (в консоль)
+    wcout << typeid(stack).name() << " time = " << t << endl;
 }
 
-void linked_list_prepend() {
-    wprintf(L"Добавление элемента в начало списка\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num;
-    wcin >> num;
-
-    try {
-        LinkedListSequence<int> linkedListSequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Последовательность после добавления: ");
-        linkedListSequence.prepend(num);
-        print_sequence(&linkedListSequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
+template <class T>
+void stack_addElementSpeed() {
+    wprintf(L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray\n");
+    stackImplementationSpeed(new LinkedListSequence<int>());
+    stackImplementationSpeed(new ArraySequence<int>());
 }
 
-void linked_list_insertat() {
-    wprintf(L"Добавление элемента в список по индексу\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num, index;
-    wcin >> num;
+#define PRINT(x) wcout << #x << L" = " << x << endl
 
-    wprintf(L"Введите индекс куда вы хотите вставить число: ");
-    wcin >> index;
-    try {
-        LinkedListSequence<int> linkedListSequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Последовательность после добавления: ");
-        linkedListSequence.insertAt(num, index);
-        print_sequence(&linkedListSequence);
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void linked_list_removeat() {
-    wprintf(L"Удаление элемента в списке по индексу\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    int index;
-    wprintf(L"Введите индекс числа которое вы хотите удалить : ");
-    wcin >> index;
-    try {
-        LinkedListSequence<int> linkedListSequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&linkedListSequence);
-        wprintf(L"Последовательность после удаления: ");
-        linkedListSequence.removeAt(index);
-        print_sequence(&linkedListSequence);
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_concat() {
-    wprintf(L"Конкатенация двух массивов\n");
-    wprintf(L"Введите из скольки символов будет состоять 1 последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите из скольки символов будет состоять 2 последовательность: ");
-    int length2;
-    wcin >> length2;
-    int data2[length];
-    for (int i = 0; i < length2; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data2[i];
-    }
-    try {
-        ArraySequence<int> arraySequence1(data, length);
-        ArraySequence<int> arraySequence2(data2, length2);
-        Sequence<int> *result = arraySequence1.concat(&arraySequence2);
-        wprintf(L"Вы ввели последовательности: ");
-        print_sequence(&arraySequence1);
-        print_sequence(&arraySequence2);
-        wprintf(L"Последовательность после конкатенации: ");
-        print_sequence(result);
-        delete result;
-
-        wprintf(L"\n");
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_getSubSequence() {
-    wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    try {
-
-        wcout << L"Введите начальный индекс: ";
-        int startIndex;
-        wcin >> startIndex;
-        wcout << L"Введите конечный индекс: ";
-        int endIndex;
-        wcin >> endIndex;
-        ArraySequence<int> arraySequence(data, length);
-        Sequence<int> *result = arraySequence.getSubsequence(startIndex, endIndex);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Полученная подпоследовательность: ");
-        print_sequence(result);
-        delete result;
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-
-void dynamic_array_findSubSequence() {
-    wprintf(L"Поиск на вхождение подпоследовательности\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Ведите из скольки символов будет состоять подпоследовательность: ");
-    int subLength;
-    wcin >> subLength;
-    int subData[subLength];
-    for (int i = 0; i < subLength; i++) {
-        wcout << L"Введите элемент подпоследовательности под индексом " << i << L": ";
-        wcin >> subData[i];
-    }
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        ArraySequence<int> subSequence(subData, subLength);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Вы ввели подпоследовательность: ");
-        print_sequence(&subSequence);
-        int index = arraySequence.findSubsequence(subSequence);
-        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_append() {
-    wprintf(L"Добавление элемента в конец массива\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num;
-    wcin >> num;
-
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Последовательность после добавления: ");
-        arraySequence.append(num);
-        print_sequence(&arraySequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_prepend() {
-    wprintf(L"Добавление элемента в начало массива\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num;
-    wcin >> num;
-
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Последовательность после добавления: ");
-        arraySequence.prepend(num);
-        print_sequence(&arraySequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_insertat() {
-    wprintf(L"Добавление элемента в массив по индексу\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    wprintf(L"Введите число которое вы хотите вставить: ");
-    int num, index;
-    wcin >> num;
-
-    wprintf(L"Введите индекс куда вы хотите вставить число: ");
-    wcin >> index;
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Последовательность после добавления: ");
-        arraySequence.insertAt(num, index);
-        print_sequence(&arraySequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-void dynamic_array_removeat() {
-    wprintf(L"Удаление элемента в массива по индексу\n");
-    wprintf(L"Введите из скольки символов будет состоять последовательность: ");
-    int length;
-    wcin >> length;
-    int data[length];
-    for (int i = 0; i < length; i++) {
-        wcout << L"Введите элемент последовательности под индексом " << i << L": ";
-        wcin >> data[i];
-    }
-    int index;
-    wprintf(L"Введите индекс числа которое вы хотите удалить : ");
-    wcin >> index;
-    try {
-        ArraySequence<int> arraySequence(data, length);
-        wprintf(L"Вы ввели последовательность: ");
-        print_sequence(&arraySequence);
-        wprintf(L"Последовательность после удаления: ");
-        arraySequence.removeAt(index);
-        print_sequence(&arraySequence);
-
-        wcout << endl;
-    } catch (IndexOutOfRange &ex) {
-        wcout << L"Exception: " << ex.what() << endl << endl;
-    }
-}
-
-// Основные операции
-void main_menu_for_linked_list() {
-    MenuItem menu_list[] = {
-            {L"Применение функции map, where, reduce",                   apply_map_where_reduce_linked_list},
-            {L"Конкатенация двух списков",                               linked_list_concat},
-            {L"Извлечение подпоследовательности (по заданным индексам)", linked_list_getSubSequence},
-            {L"Поиск на вхождение подпоследовательности",                linked_list_findSubSequence},
-            {L"Добавление элемента в конец списка",                      linked_list_append},
-            {L"Добавление элемента в начало списка",                     linked_list_prepend},
-            {L"Добавление элемента в список по индексу",                 linked_list_insertat},
-            {L"Удаление элемента списка по индексу",                     linked_list_removeat},
-            {L"Итерация по списку",                     iterator_linked_list}};
-    menuLoop(L"Возможные операции", _countof(menu_list), menu_list);
-}
-
-
-void main_menu_for_dynamic_array() {
-    MenuItem menu_array[] = {
-            {L"Конкатенация двух массивов",                              dynamic_array_concat},
-            {L"Извлечение подпоследовательности (по заданным индексам)", dynamic_array_getSubSequence},
-            {L"Поиск на вхождение подпоследовательности",                dynamic_array_findSubSequence},
-            {L"Добавление элемента в конец массива",                     dynamic_array_append},
-            {L"Добавление элемента в начало массива",                    dynamic_array_prepend},
-            {L"Добавление элемента в массив по индексу",                 dynamic_array_insertat},
-            {L"Удаление элемента массива по индексу",                    dynamic_array_removeat}};
-    menuLoop(L"Возможные операции", _countof(menu_array), menu_array);
+// Основные операции с выбранным типом данных
+template <class T>
+void main_menu() {
+    MenuItem menu[] = {
+            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce<T>},
+            {L"Конкатенация двух стеков", stack_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)", stack_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности", stack_findSubSequence<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", stack_addElementSpeed<T>}};
+    menuLoop(L"Возможные операции", _countof(menu), menu);
 }
 
 // Основная программа
 int main() {
     // Задаём кодировку UTF-16 для всего вывода в программе
+    // Все символы и строки будут wchar_t
 #if WIN32 || WIN64
     _setmode(_fileno(stdout), _O_U16TEXT);
     _setmode(_fileno(stdin), _O_U16TEXT);
     _setmode(_fileno(stderr), _O_U16TEXT);
 #endif
-
     wprintf(L"== Тестирование операций ==\n");
 
-    MenuItem menu[] = {{L"Связанные списки",     main_menu_for_linked_list},
-                       {L"Динамические массивы", main_menu_for_dynamic_array}};
-
+    MenuItem menu[] = {{L"Целые числа (int)", main_menu<int>},
+                       {L"Вещественные числа (double)", main_menu<double>},
+                       {L"Комплексные числа (complex<double>)", main_menu<complex<double>>},
+                       {L"Строки/символы (string)", main_menu<wstring>}};
     try {
         menuLoop(L"Выберите тип элементов", _countof(menu), menu);
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
-
 }

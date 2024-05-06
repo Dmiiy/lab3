@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.27)
-project(lab2)
+project(lab3)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(lab2
+add_executable(lab3
         Sequence.h
         ArraySequence.h
         LinkedListSequence.h
@@ -13,6 +13,10 @@ add_executable(lab2
         main.cpp
         menu.h
         ArraySequenceImmutable.h
-        SequenceImmutable.h
+        Stack.h
+        Deque.h
+        person.h
+        CString.h
+        Queue.h
 )
 add_subdirectory(Google_tests)
