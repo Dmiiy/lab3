@@ -181,24 +181,24 @@ CMakeFiles/lab3.dir/main.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32/bits/basic_file.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32/bits/c++io.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/fstream.tcc \
- C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iterator \
- C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stream_iterator.h \
- C:\Users\dimak\CLionProjects\lab3\ArraySequence.h \
+ C:\Users\dimak\CLionProjects\lab3\arraysequence.h \
  C:\Users\dimak\CLionProjects\lab3\DynamicArray.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cstring \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
  C:\Users\dimak\CLionProjects\lab3\Common.h \
  C:\Users\dimak\CLionProjects\lab3\Sequence.h \
+ C:\Users\dimak\CLionProjects\lab3\linkedlist.h \
+ C:\Users\dimak\CLionProjects\lab3\linkedlistsequence.h \
  C:\Users\dimak\CLionProjects\lab3\LinkedList.h \
- C:\Users\dimak\CLionProjects\lab3\LinkedListSequence.h \
- C:\Users\dimak\CLionProjects\lab3\Menu.h \
+ C:\Users\dimak\CLionProjects\lab3\menu.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/cassert \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/x86_64-w64-mingw32/include/assert.h \
  C:\Users\dimak\CLionProjects\lab3\Stack.h \
- C:\Users\dimak\CLionProjects\lab3\Deque.h \
+ C:\Users\dimak\CLionProjects\lab3\CString.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/vector \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_uninitialized.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_vector.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_bvector.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/vector.tcc \
- C:\Users\dimak\CLionProjects\lab3\CString.h
+ C:\Users\dimak\CLionProjects\lab3\deque.h \
+ C:\Users\dimak\CLionProjects\lab3\queue.h

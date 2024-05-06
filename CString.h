@@ -77,7 +77,7 @@ public:
             }
     }
     void print() {
-        std::wcout << L"Stack size = " << data->getLength() << std::endl;
+        std::wcout << L"String size = " << data->getLength() << std::endl;
         for (int i = 0; i < data->getLength(); i++) {
             std::wcout << data->get(i) << L" ";
         }

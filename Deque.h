@@ -4,103 +4,124 @@
 
 #ifndef LAB3_DEQUE_H
 #define LAB3_DEQUE_H
+#include <cwchar>
 #include <iostream>
 #include "Sequence.h"
+using namespace std;
 
-#include <vector>
-#include "Sequence.h"
-
-template <typename T>
-class Deque : public Sequence<T> {
-private:
-    std::vector<std::vector<T>> segments;
-    int headSegment, headIndex;
-    int tailSegment, tailIndex;
-
-    void expandIfNeeded() {
-        if (tailIndex == segments[tailSegment].size()) {
-            segments.push_back(std::vector<T>());
-            tailSegment++;
-            tailIndex = 0;
-        }
-    }
+template <class T>
+class Deque {
+    Sequence<T> *data;
 
 public:
-    Deque() : headSegment(0), headIndex(0), tailSegment(0), tailIndex(0) {
-        segments.push_back(std::vector<T>());
+    explicit Deque(Sequence<T> *sequence) : data(sequence) {};
+
+    // Деструктор
+    ~Deque() {
+        delete data;
+        data = nullptr;
     }
 
-    bool isEmpty() const override {
-        return headSegment == tailSegment && headIndex == tailIndex;
+    // Проверка на пустоту
+    bool empty() const {
+        return data->getLength() == 0;
     }
 
-    int size() const override {
-        int size = 0;
-        for (int i = 0; i < segments.size(); ++i) {
-            size += segments[i].size();
-        }
-        return size - headIndex + tailIndex;
+    // Получение размера дека
+    int getLength() const {
+        return data->getLength();
     }
 
-    void pushFront(const T& value) override {
-        if (headIndex == 0) {
-            if (headSegment == 0) {
-                segments.insert(segments.begin(), std::vector<T>());
-                headSegment++;
-            } else {
-                headSegment--;
-            }
-            headIndex = segments[headSegment].size();
-        }
-        segments[headSegment][--headIndex] = value;
+    // Добавление элемента в начало дека
+    void pushFront(T item) {
+        data->prepend(item);
     }
 
-    void pushBack(const T& value) override {
-        expandIfNeeded();
-        segments[tailSegment][tailIndex++] = value;
+    // Добавление элемента в конец дека
+    void pushBack(T item) {
+        data->append(item);
     }
 
-    T popFront() override {
-        if (isEmpty()) {
-            throw std::runtime_error("Deque is empty");
-        }
-        T value = segments[headSegment][headIndex++];
-        if (headIndex == segments[headSegment].size()) {
-            headSegment++;
-            headIndex = 0;
-        }
+    // Удаление и возврат элемента из начала дека
+    T popFront() {
+        T value = data->getFirst();
+        data->removeAt(0);
         return value;
     }
 
-    T popBack() override {
-        if (isEmpty()) {
-            throw std::runtime_error("Deque is empty");
-        }
-        if (tailIndex == 0) {
-            tailSegment--;
-            tailIndex = segments[tailSegment].size();
-        }
-        return segments[tailSegment][--tailIndex];
+    // Удаление и возврат элемента из конца дека
+    T popBack() {
+        T value = data->getLast();
+        data->removeAt(data->getLength() - 1);
+        return value;
     }
 
-    T& front() override {
-        if (isEmpty()) {
-            throw std::runtime_error("Deque is empty");
-        }
-        return segments[headSegment][headIndex];
+    // Получение элемента по индексу
+    T operator[](int i) const {
+        return data->get(i);
     }
 
-    T& back() override {
-        if (isEmpty()) {
-            throw std::runtime_error("Deque is empty");
-        }
-        return segments[tailSegment][tailIndex - 1];
+    // Применение функции к каждому элементу дека
+    Deque<T> *map(T (*f)(T)) {
+        return new Deque<T>(data->map(f));
     }
 
-    void clear() override {
-        segments.clear();
-        segments.push_back(std::vector<T>());
-        headSegment = tailSegment = headIndex = tailIndex = 0;
+    // Фильтрация элементов дека по условию
+    Deque<T> *where(bool (*h)(T)) {
+        return new Deque<T>(data->where(h));
+    }
+
+    // Сворачивание элементов дека с помощью функции
+    T reduce(T (*f)(T, T)) {
+        return data->reduce(f);
+    }
+
+    // Объединение двух деков
+    Deque<T> *concat(Deque<T> &deque) {
+        return new Deque<T>(data->concat(deque.data));
+    }
+
+    // Вывод дека на экран
+    void print() {
+        wcout << L"Deque size = " << data->getLength() << endl;
+        for (int i = 0; i < data->getLength(); i++) {
+            wcout << data->get(i) << L" ";
+        }
+        wcout << endl;
+    }
+
+    // Конструктор для ввода элементов дека
+    explicit Deque(Sequence<T> *sequence, const wchar_t *string) : data(sequence) {
+        wcout << string << endl;
+        int N;
+        wprintf(L"Введите количество элементов: ");
+        wcin >> N;
+        // Вводим элементы по одному
+        for (int i = 0; i < N; i++) {
+            wprintf(L"Введите элемент с индексом %d: ", i);
+            T element;
+            wcin >> element;
+            // Выбор, куда добавить элемент:
+            wprintf(L"Добавить в начало (0) или конец (1)? ");
+            int choice;
+            wcin >> choice;
+            if (choice == 0) {
+                pushFront(element);
+            } else {
+                pushBack(element);
+            }
+            // print(); // Текущее состояние дека
+        }
+    }
+
+    // Получение подпоследовательности
+    Sequence<T> *getSubsequence(int startIndex, int endIndex) const {
+        return data->getSubsequence(startIndex, endIndex);
+    }
+
+    // Поиск подпоследовательности
+    int findSubsequence(Deque<T> &deque) {
+        return data->findSubsequence(*deque.data);
     }
 };
 

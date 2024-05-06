@@ -80,19 +80,5 @@ public:
     }
 };
 
-namespace queue {
-    template <class T>
-    Queue<T> *map(T (*f)(T), Queue<T> &l) {
-        return l.map(f);
-    }
-    template <class T>
-    Queue<T> *where(bool (*h)(T), Queue<T> &l) {
-        return l.where(h);
-    }
-    template <class T>
-    T reduce(T (*f)(T, T), Queue<T> &l) {
-        return l.reduce(f);
-    }
-}
 #endif
 

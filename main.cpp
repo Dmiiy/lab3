@@ -15,8 +15,11 @@
 #include "linkedlist.h"
 #include "linkedlistsequence.h"
 #include "menu.h"
-#include "stack.h"
+#include "Stack.h"
 #include "CString.h"
+#include "deque.h"
+#include "queue.h"
+
 
 // Функиия, которую можно применить к каждому элементу последовательности
 template <class T>
@@ -68,8 +71,10 @@ void print_sequence(Sequence<T> *sequence) {
 }
 
 
+
+//Stack
 template <class T>
-void apply_map_where_reduce() {
+void apply_map_where_reduce_stack() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
 
     Stack<T> stack(new LinkedListSequence<T>, L"Ввод данных стека");  // Стек из элементом типа T
@@ -141,7 +146,7 @@ void stack_findSubSequence() {
         Stack<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
 
         int index = stack.findSubsequence(subSequence);
-        wcout << L"Позиция подполедовательности = " << index << endl << endl;
+        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
@@ -165,7 +170,6 @@ void stackImplementationSpeed(Sequence<int> *sequence) {
     // Выводим результат в секундах на экран (в консоль)
     wcout << typeid(stack).name() << " time = " << t << endl;
 }
-
 template <class T>
 void stack_addElementSpeed() {
     wprintf(L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray\n");
@@ -173,19 +177,431 @@ void stack_addElementSpeed() {
     stackImplementationSpeed(new ArraySequence<int>());
 }
 
-#define PRINT(x) wcout << #x << L" = " << x << endl
-
-// Основные операции с выбранным типом данных
+//Queue
 template <class T>
-void main_menu() {
-    MenuItem menu[] = {
-            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce<T>},
+void apply_map_where_reduce_queue() {
+    wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
+
+    Queue<T> queue(new LinkedListSequence<T>, L"Ввод данных очереди");
+
+    wprintf(L"Применяем операцию map\n");
+    Queue<T> *mapRes = queue.map(map_function);
+    mapRes->print();  // Печатаем содержимое стека
+    delete mapRes;    // Очищаем память
+
+    wprintf(L"Применяем операцию where\n");
+    Queue<T> *whereRes = queue.where(where_function);
+    whereRes->print();
+    delete whereRes;  // Очищаем память
+
+    wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
+    T reduceRes = queue.reduce(reduce_function);
+    wcout << L"Результат reduce: " << reduceRes << endl << endl;
+
+    wprintf(L"\n");
+}
+
+template <class T>
+void queue_concat() {
+    wprintf(L"Конкатенация двух очередей\n");
+
+    try {
+        Queue<T> queue1(new LinkedListSequence<T>, L"Ввод элементов первой очереди");
+        Queue<T> queue2(new LinkedListSequence<T>, L"Ввод элементов второй очереди");
+
+        Queue<T> *result = queue1.concat(queue2);
+        result->print();
+        delete result;
+
+        wprintf(L"\n");
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void queue_getSubSequence() {
+    wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
+    try {
+        Queue<T> queue(new LinkedListSequence<T>, L"Ввод элементов очереди");
+        wcout << L"Введите начальный индекс: ";
+        int startIndex;
+        wcin >> startIndex;
+        wcout << L"Введите конечный индекс: ";
+        int endIndex;
+        wcin >> endIndex;
+
+        Sequence<T> *result = queue.getSubsequence(startIndex, endIndex);
+        print_sequence(result);
+        delete result;
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void queue_findSubSequence() {
+    wprintf(L"Поиск на вхождение подпоследовательности\n");
+
+    try {
+        LinkedListSequence<T> linkedListSequence;
+        Queue<T> queue(new LinkedListSequence<T>, L"Ввод элементов очереди");
+        Queue<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
+
+        int index = queue.findSubsequence(subSequence);
+        wcout << L"Позиция подполедовательности = " << index << endl << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+// Замеряем время работы стека
+void queueImplementationSpeed(Sequence<int> *sequence) {
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
+
+    Queue<int> queue(sequence);  // Создаём стек
+    const int numbers = 20000;   // Добавим числа
+    wcout << L"Количество элементов для тестирования: " << numbers << endl;
+    for (int i = 1; i <= numbers; i++) {
+        queue.enqueue(i);
+    }
+
+    auto end = chrono::steady_clock::now();  // Конец работы
+    auto elapsed_mcs = chrono::duration_cast<chrono::microseconds>(end - begin);
+    // Вычисляем разницу в секундах времени начала и окончания работы
+    const double t = elapsed_mcs.count() / 1e6;
+    // Выводим результат в секундах на экран (в консоль)
+    wcout << typeid(queue).name() << " time = " << t << endl;
+}
+
+template <class T>
+void queue_addElementSpeed() {
+    wprintf(L"Сравнение времени добавления элементов в очередь на основе LinkedList и DynamicArray\n");
+    queueImplementationSpeed(new LinkedListSequence<int>());
+    queueImplementationSpeed(new ArraySequence<int>());
+}
+
+//Deque
+template <class T>
+void apply_map_where_reduce_deque() {
+    wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
+
+    Deque<T> deque(new LinkedListSequence<T>, L"Ввод данных дека");  // Стек из элементом типа T
+
+    wprintf(L"Применяем операцию map\n");
+    Deque<T> *mapRes = deque.map(map_function);
+    mapRes->print();  // Печатаем содержимое стека
+    delete mapRes;    // Очищаем память
+
+    wprintf(L"Применяем операцию where\n");
+    Deque<T> *whereRes = deque.where(where_function);
+    whereRes->print();
+    delete whereRes;  // Очищаем память
+
+    wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
+    T reduceRes = deque.reduce(reduce_function);
+    wcout << L"Результат reduce: " << reduceRes << endl << endl;
+
+    wprintf(L"\n");
+}
+
+template <class T>
+void deque_concat() {
+    wprintf(L"Конкатенация двух деков\n");
+
+    try {
+        Deque<T> deque1(new LinkedListSequence<T>, L"Ввод элементов первого дека");
+        Deque<T> deque2(new LinkedListSequence<T>, L"Ввод элементов второго дека");
+
+        Deque<T> *result = deque1.concat(deque2);
+        result->print();
+        delete result;
+
+        wprintf(L"\n");
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void deque_getSubSequence() {
+    wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
+    try {
+        Deque<T> deque(new LinkedListSequence<T>, L"Ввод элементов дека");
+        wcout << L"Введите начальный индекс: ";
+        int startIndex;
+        wcin >> startIndex;
+        wcout << L"Введите конечный индекс: ";
+        int endIndex;
+        wcin >> endIndex;
+
+        Sequence<T> *result = deque.getSubsequence(startIndex, endIndex);
+        print_sequence(result);
+        delete result;
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void deque_findSubSequence() {
+    wprintf(L"Поиск на вхождение подпоследовательности\n");
+
+    try {
+        LinkedListSequence<T> linkedListSequence;
+        Deque<T> deque(new LinkedListSequence<T>, L"Ввод элементов дека");
+        Deque<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
+
+        int index = deque.findSubsequence(subSequence);
+        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+// Замеряем время работы стека
+void dequeImplementationSpeed(Sequence<int> *sequence) {
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
+
+    Deque<int> deque(sequence);  // Создаём стек
+    const int numbers = 20000;   // Добавим числа
+    wcout << L"Количество элементов для тестирования: " << numbers << endl;
+    for (int i = 1; i <= numbers; i++) {
+        deque.pushFront(i);
+    }
+
+    auto end = chrono::steady_clock::now();  // Конец работы
+    auto elapsed_mcs = chrono::duration_cast<chrono::microseconds>(end - begin);
+    // Вычисляем разницу в секундах времени начала и окончания работы
+    const double t = elapsed_mcs.count() / 1e6;
+    // Выводим результат в секундах на экран (в консоль)
+    wcout << typeid(deque).name() << " time = " << t << endl;
+}
+
+template <class T>
+void deque_addElementSpeed() {
+    wprintf(L"Сравнение времени добавления элементов в дек на основе LinkedList и DynamicArray\n");
+    dequeImplementationSpeed(new LinkedListSequence<int>());
+    dequeImplementationSpeed(new ArraySequence<int>());
+}
+
+//Cstring
+
+template <class T>
+void cstring_concat() {
+    wprintf(L"Конкатенация двух строк\n");
+
+    try {
+        CString<T> cString1(new LinkedListSequence<T>, L"Ввод элементов первой строки");
+        CString<T> cString2(new LinkedListSequence<T>, L"Ввод элементов второй строки");
+
+        CString<T> *result = cString1.concat(cString2);
+        result->print();
+        delete result;
+
+        wprintf(L"\n");
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void cstring_getSubSequence() {
+    wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
+    try {
+        CString<T>cString(new LinkedListSequence<T>, L"Ввод элементов строки");
+        wcout << L"Введите начальный индекс: ";
+        int startIndex;
+        wcin >> startIndex;
+        wcout << L"Введите конечный индекс: ";
+        int endIndex;
+        wcin >> endIndex;
+
+        Sequence<T> *result = cString.getSubsequence(startIndex, endIndex);
+        print_sequence(result);
+        delete result;
+
+        wcout << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void cstring_findSubSequence() {
+    wprintf(L"Поиск на вхождение подпоследовательности\n");
+
+    try {
+        CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
+        CString<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
+
+        int index = cString.findSubsequence(subSequence);
+        wcout << L"Позиция подпоследовательности = " << index << endl << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
+template <class T>
+void cstring_devide() {
+    wprintf(L"Разбиение строки на подстроки\n");
+    wprintf(L"Введите количество индексов с которых будут выделены подстроки: ");
+    int N;
+    wcin >> N;
+    int data[N];
+    for (int i = 0; i < N; i++) {
+        wprintf(L"Введите %d индекс : ",i);
+        wcin >> data[i];
+    }
+    try {
+        CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
+        CString<T>(cString.getSubsequence(0, data[0])).print();
+        for (int i = 0; i < N; i++) {
+            CString<T>(cString.getSubsequence(data[i], data[i+1])).print();
+        }
+        CString<T>(cString.getSubsequence(data[N-1], cString.getLength()-1)).print();
+        wcout << endl;
+    }
+    catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+
+}
+template <class T>
+void cstring_change() {
+    wprintf(L"Изменение подстрок\n");
+    try {
+        CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки в которой будет изменена подстрока");
+        CString<T> subSequence(new LinkedListSequence<T>, L"Ввод строки для изменения");
+        wprintf(L"Введите индексы между которыми будет изменена подстрока: ");
+        int data[2];
+        for (int i = 0; i < 2; i++) {
+            wprintf(L"Введите %d индекс : ",i);
+            wcin >> data[i];
+        }
+        CString<T> part1(cString.getSubsequence(0, data[0])) ;
+        CString<T> part2(cString.getSubsequence(data[1], cString.getLength()-1));
+        CString<T> *result=(part1.concat(subSequence))->concat(part2);
+        result->print();
+        delete result;
+        wcout << endl;
+    }
+    catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+
+}
+
+// Замеряем время работы стека
+void cstringImplementationSpeed(Sequence<wchar_t> *sequence) {
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
+
+    CString<wchar_t> cString(sequence);  // Создаём стек
+    const int numbers = 20000;   // Добавим числа
+    wcout << L"Количество элементов для тестирования: " << numbers << endl;
+    for (int i = 1; i <= numbers; i++) {
+        cString.push(wchar_t(i));  // Добавляем элемент с индексом i);
+    }
+
+    auto end = chrono::steady_clock::now();  // Конец работы
+    auto elapsed_mcs = chrono::duration_cast<chrono::microseconds>(end - begin);
+    // Вычисляем разницу в секундах времени начала и окончания работы
+    const double t = elapsed_mcs.count() / 1e6;
+    // Выводим результат в секундах на экран (в консоль)
+    wcout << typeid(cString).name() << " time = " << t << endl;
+}
+
+template <class T>
+void cstring_addElementSpeed() {
+    wprintf(L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray\n");
+    cstringImplementationSpeed(new LinkedListSequence<wchar_t>());
+    cstringImplementationSpeed(new ArraySequence<wchar_t>());
+}
+
+// Главное меню
+
+template <class T>
+void main_menu_stack() {
+    MenuItem menu_stack[] = {
+            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_stack<T>},
             {L"Конкатенация двух стеков", stack_concat<T>},
             {L"Извлечение подпоследовательности (по заданным индексам)", stack_getSubSequence<T>},
             {L"Поиск на вхождение подпоследовательности", stack_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", stack_addElementSpeed<T>}};
-    menuLoop(L"Возможные операции", _countof(menu), menu);
+    menuLoop(L"Возможные операции", _countof(menu_stack),  menu_stack);
 }
+template <class T>
+void main_menu_queue() {
+    MenuItem menu_queue[] = {
+            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_queue<T>},
+            {L"Конкатенация двух стеков", queue_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)", queue_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности", queue_findSubSequence<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", queue_addElementSpeed<T>}};
+    menuLoop(L"Возможные операции", _countof(menu_queue), menu_queue);
+}
+template <class T>
+void main_menu_deque() {
+    MenuItem menu_deque[] = {
+            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_deque<T>},
+            {L"Конкатенация двух стеков", deque_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)", deque_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности", deque_findSubSequence<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", deque_addElementSpeed<T>}};
+    menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
+}
+template <class T>
+void main_menu_cstring() {
+    MenuItem menu_cstring[] = {
+            {L"Конкатенация двух стеков", cstring_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)", cstring_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности", cstring_findSubSequence<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_addElementSpeed<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_devide<T>},
+            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_change<T>}};
+    menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
+}
+
+void deque_menu() {
+    wprintf(L"== Deque-Выберите тип данных ==\n");
+
+    MenuItem menu_deque[] = {{L"Целые числа (int)", main_menu_deque<int>},
+                       {L"Вещественные числа (double)", main_menu_deque<double>},
+                       {L"Комплексные числа (complex<double>)", main_menu_deque<complex<double>>},
+                       {L"Строки/символы (string)", main_menu_deque<wstring>}};
+    menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
+}
+void queue_menu() {
+    wprintf(L"== Queue-Выберите тип данных ==\n");
+
+    MenuItem menu_queue[] = {{L"Целые числа (int)", main_menu_queue<int>},
+                       {L"Вещественные числа (double)", main_menu_queue<double>},
+                       {L"Комплексные числа (complex<double>)", main_menu_queue<complex<double>>},
+                       {L"Строки/символы (string)", main_menu_queue<wstring>}};
+    menuLoop(L"Возможные операции", _countof(menu_queue),   menu_queue);
+}
+
+void stack_menu() {
+    wprintf(L"== Stack-Выберите тип данных ==\n");
+
+    MenuItem menu_stack[] = {{L"Целые числа (int)", main_menu_stack<int>},
+                       {L"Вещественные числа (double)", main_menu_stack<double>},
+                       {L"Комплексные числа (complex<double>)", main_menu_stack<complex<double>>},
+                       {L"Строки/символы (string)", main_menu_stack<wstring>}};
+    menuLoop(L"Возможные операции", _countof(menu_stack),   menu_stack);
+}
+
+void CString_menu() {
+    wprintf(L"== CString-Выберите тип данных ==\n");
+    MenuItem menu_cstring[] = {{L" (wchar_t)", main_menu_cstring<wchar_t>},
+                       {L"Строки/символы (string)", main_menu_cstring<wstring>}};
+    menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
+}
+// Основные операции с выбранным типом данных
 
 // Основная программа
 int main() {
@@ -198,13 +614,40 @@ int main() {
 #endif
     wprintf(L"== Тестирование операций ==\n");
 
-    MenuItem menu[] = {{L"Целые числа (int)", main_menu<int>},
-                       {L"Вещественные числа (double)", main_menu<double>},
-                       {L"Комплексные числа (complex<double>)", main_menu<complex<double>>},
-                       {L"Строки/символы (string)", main_menu<wstring>}};
+    MenuItem menu[] = {{L"Стек", stack_menu},
+                       {L"Очередь", queue_menu},
+                       {L"Дек", deque_menu},
+                       {L"CString", CString_menu}};
     try {
         menuLoop(L"Выберите тип элементов", _countof(menu), menu);
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
 }
+
+struct PersonID {
+    int id;
+};
+
+class Person {
+private:
+    PersonID id;
+    char *firstName;
+    char *middleName;
+    char *lastName;
+    time_t birthDate;
+
+public:
+    PersonID GetID() {
+        return id;
+    };
+    char *GetFirstName() {
+        return firstName;
+    };
+    char *GetMiddleName() {
+        return middleName;
+    };
+    char *GetLastName() {
+        return lastName;
+    };
+};
