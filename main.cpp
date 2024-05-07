@@ -19,15 +19,64 @@
 #include "CString.h"
 #include "deque.h"
 #include "queue.h"
+#include "Person.h"
+#include "FunctionHolder.h"
 
 
+
+
+//functions of printing
+template<class T>
+void print_sequence(Sequence<T> *sequence) {
+    for (int i = 0; i < sequence->getLength(); i++) {
+        wcout << sequence->get(i) << L" ";
+    }
+    wcout << endl;
+}
+void print_sequence(Sequence<Person> *sequence) {
+    wcout << L"Stack size = " <<sequence->getLength() << endl;
+    for (int i = 0; i <sequence->getLength(); i++) {
+        wcout <<L"ID: "<<sequence->get(i).GetID().id<< L" Фамилия: "<<sequence-> get(i).GetLastName() << L" Имя: "<<sequence->get(i).GetFirstName() << L" Отчество: "<<sequence->get(i).GetMiddleName() << L"| ";
+    }
+    wcout << endl;
+}
+void print_sequence(Sequence<FunctionHolder> *sequence) {
+    wcout << L"Stack size = " <<sequence->getLength() << endl;
+    wprintf(L"Ввеите два целых числа: ");
+    int a, b;
+    wcin >> a >> b;
+    for (int i = 0; i <sequence->getLength(); i++) {
+        wcout <<L"Функция "<<sequence->get(i).name<<L" Результат: " <<(sequence->get(i).funcPtr)(a, b)<< L"| ";
+    }
+    wcout << endl;
+}
 // Функиия, которую можно применить к каждому элементу последовательности
-template <class T>
+template<class T>
 T map_function(T x) {
     return x * x;
 }
 
 wstring map_function(wstring x) { return x + L"!"; }
+
+Person map_function(Person x) {
+    Person person;
+    person.SetFirstName(x.GetFirstName() + L" " + x.GetLastName() + L" " + L" " + x.GetMiddleName() + L" " +
+                        to_wstring(x.GetID().id));
+    return person;
+}
+FunctionHolder map_function(FunctionHolder x) {
+    Functions functions;
+    FunctionHolder holder;
+    wstring name = x.name;
+    if (name==L"Сложение") {
+        holder.name = L"Вычитание";
+        holder.funcPtr =&functions.Sub;
+    }else if (name==L"Вычитание") {
+        holder.name = L"Сложение";
+        holder.funcPtr =&functions.Add;
+    }
+    return holder;
+}
 
 // Фильтры для разных типов данных. Для каждого типа - своя
 bool where_function(int x) {
@@ -54,49 +103,61 @@ bool where_function(const wstring x) {
     return result;
 }
 
+bool where_function(Person x) {
+    bool result = x.GetID().id < 4;
+    wcout << L"  where: значение Id " << x.GetID().id << L" < 4: " << result << endl;
+    return result;
+}
+bool where_function(FunctionHolder x) {
+    bool result = x.name ==L"Сложение";
+    wcout << L"  where: Сложение ли? " << x.name << L" == Сложение: " << result << endl;
+    return result;
+}
+
 // Сложение для всех чисел (конкатенация для строк)
-template <class T>
+template<class T>
 T reduce_function(T a, T b) {
     T result = a + b;
     wcout << L"  reduce: " << a << L" + " << b << " = " << result << endl;
     return result;
 }
 
-template <class T>
-void print_sequence(Sequence<T> *sequence) {
-    for (int i = 0; i < sequence->getLength(); i++) {
-        wcout << sequence->get(i) << L" ";
-    }
-    wcout << endl;
+Person reduce_function(Person a, Person b) {
+    Person result;
+    result.SetID(a.GetID().id + b.GetID().id);
+    result.SetFirstName(a.GetFirstName() + b.GetFirstName());
+    wcout << L"  reduce: " << a.GetFirstName() << L" + " << b.GetFirstName() << " = " << result.GetFirstName()<< endl;
+    return result;
 }
-
-
-
+FunctionHolder reduce_function(FunctionHolder a, FunctionHolder b) {
+    FunctionHolder result;
+    result.name = a.name;
+    result.funcPtr = b.funcPtr;
+    wcout << L"  reduce: " << a.name<< L" + " << b.name << " = " << result.name<< endl;
+    return result;
+}
 //Stack
-template <class T>
+template<class T>
 void apply_map_where_reduce_stack() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
-
-    Stack<T> stack(new LinkedListSequence<T>, L"Ввод данных стека");  // Стек из элементом типа T
-
+    Stack<T> stack(new LinkedListSequence<T>, L"Ввод элементов первого стека");
     wprintf(L"Применяем операцию map\n");
     Stack<T> *mapRes = stack.map(map_function);
-    mapRes->print();  // Печатаем содержимое стека
+    mapRes->print(mapRes);
     delete mapRes;    // Очищаем память
 
     wprintf(L"Применяем операцию where\n");
     Stack<T> *whereRes = stack.where(where_function);
-    whereRes->print();
+    whereRes->print(whereRes);
     delete whereRes;  // Очищаем память
 
     wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
     T reduceRes = stack.reduce(reduce_function);
-    wcout << L"Результат reduce: " << reduceRes << endl << endl;
 
     wprintf(L"\n");
 }
 
-template <class T>
+template<class T>
 void stack_concat() {
     wprintf(L"Конкатенация двух стеков\n");
 
@@ -105,7 +166,7 @@ void stack_concat() {
         Stack<T> stack2(new LinkedListSequence<T>, L"Ввод элементов второго стека");
 
         Stack<T> *result = stack1.concat(stack2);
-        result->print();
+        result->print(result);
         delete result;
 
         wprintf(L"\n");
@@ -114,7 +175,7 @@ void stack_concat() {
     }
 }
 
-template <class T>
+template<class T>
 void stack_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
     try {
@@ -136,7 +197,7 @@ void stack_getSubSequence() {
     }
 }
 
-template <class T>
+template<class T>
 void stack_findSubSequence() {
     wprintf(L"Поиск на вхождение подпоследовательности\n");
 
@@ -170,7 +231,8 @@ void stackImplementationSpeed(Sequence<int> *sequence) {
     // Выводим результат в секундах на экран (в консоль)
     wcout << typeid(stack).name() << " time = " << t << endl;
 }
-template <class T>
+
+template<class T>
 void stack_addElementSpeed() {
     wprintf(L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray\n");
     stackImplementationSpeed(new LinkedListSequence<int>());
@@ -178,7 +240,7 @@ void stack_addElementSpeed() {
 }
 
 //Queue
-template <class T>
+template<class T>
 void apply_map_where_reduce_queue() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
 
@@ -201,7 +263,7 @@ void apply_map_where_reduce_queue() {
     wprintf(L"\n");
 }
 
-template <class T>
+template<class T>
 void queue_concat() {
     wprintf(L"Конкатенация двух очередей\n");
 
@@ -219,7 +281,7 @@ void queue_concat() {
     }
 }
 
-template <class T>
+template<class T>
 void queue_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
     try {
@@ -241,7 +303,7 @@ void queue_getSubSequence() {
     }
 }
 
-template <class T>
+template<class T>
 void queue_findSubSequence() {
     wprintf(L"Поиск на вхождение подпоследовательности\n");
 
@@ -276,15 +338,16 @@ void queueImplementationSpeed(Sequence<int> *sequence) {
     wcout << typeid(queue).name() << " time = " << t << endl;
 }
 
-template <class T>
+template<class T>
 void queue_addElementSpeed() {
     wprintf(L"Сравнение времени добавления элементов в очередь на основе LinkedList и DynamicArray\n");
     queueImplementationSpeed(new LinkedListSequence<int>());
     queueImplementationSpeed(new ArraySequence<int>());
 }
 
+
 //Deque
-template <class T>
+template<class T>
 void apply_map_where_reduce_deque() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
 
@@ -307,7 +370,7 @@ void apply_map_where_reduce_deque() {
     wprintf(L"\n");
 }
 
-template <class T>
+template<class T>
 void deque_concat() {
     wprintf(L"Конкатенация двух деков\n");
 
@@ -325,7 +388,7 @@ void deque_concat() {
     }
 }
 
-template <class T>
+template<class T>
 void deque_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
     try {
@@ -347,7 +410,7 @@ void deque_getSubSequence() {
     }
 }
 
-template <class T>
+template<class T>
 void deque_findSubSequence() {
     wprintf(L"Поиск на вхождение подпоследовательности\n");
 
@@ -382,7 +445,7 @@ void dequeImplementationSpeed(Sequence<int> *sequence) {
     wcout << typeid(deque).name() << " time = " << t << endl;
 }
 
-template <class T>
+template<class T>
 void deque_addElementSpeed() {
     wprintf(L"Сравнение времени добавления элементов в дек на основе LinkedList и DynamicArray\n");
     dequeImplementationSpeed(new LinkedListSequence<int>());
@@ -391,7 +454,7 @@ void deque_addElementSpeed() {
 
 //Cstring
 
-template <class T>
+template<class T>
 void cstring_concat() {
     wprintf(L"Конкатенация двух строк\n");
 
@@ -409,11 +472,11 @@ void cstring_concat() {
     }
 }
 
-template <class T>
+template<class T>
 void cstring_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
     try {
-        CString<T>cString(new LinkedListSequence<T>, L"Ввод элементов строки");
+        CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
         wcout << L"Введите начальный индекс: ";
         int startIndex;
         wcin >> startIndex;
@@ -431,7 +494,7 @@ void cstring_getSubSequence() {
     }
 }
 
-template <class T>
+template<class T>
 void cstring_findSubSequence() {
     wprintf(L"Поиск на вхождение подпоследовательности\n");
 
@@ -446,7 +509,7 @@ void cstring_findSubSequence() {
     }
 }
 
-template <class T>
+template<class T>
 void cstring_devide() {
     wprintf(L"Разбиение строки на подстроки\n");
     wprintf(L"Введите количество индексов с которых будут выделены подстроки: ");
@@ -454,16 +517,16 @@ void cstring_devide() {
     wcin >> N;
     int data[N];
     for (int i = 0; i < N; i++) {
-        wprintf(L"Введите %d индекс : ",i);
+        wprintf(L"Введите %d индекс : ", i);
         wcin >> data[i];
     }
     try {
         CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
         CString<T>(cString.getSubsequence(0, data[0])).print();
         for (int i = 0; i < N; i++) {
-            CString<T>(cString.getSubsequence(data[i], data[i+1])).print();
+            CString<T>(cString.getSubsequence(data[i], data[i + 1])).print();
         }
-        CString<T>(cString.getSubsequence(data[N-1], cString.getLength()-1)).print();
+        CString<T>(cString.getSubsequence(data[N - 1], cString.getLength() - 1)).print();
         wcout << endl;
     }
     catch (IndexOutOfRange &ex) {
@@ -471,7 +534,8 @@ void cstring_devide() {
     }
 
 }
-template <class T>
+
+template<class T>
 void cstring_change() {
     wprintf(L"Изменение подстрок\n");
     try {
@@ -480,12 +544,12 @@ void cstring_change() {
         wprintf(L"Введите индексы между которыми будет изменена подстрока: ");
         int data[2];
         for (int i = 0; i < 2; i++) {
-            wprintf(L"Введите %d индекс : ",i);
+            wprintf(L"Введите %d индекс : ", i);
             wcin >> data[i];
         }
-        CString<T> part1(cString.getSubsequence(0, data[0])) ;
-        CString<T> part2(cString.getSubsequence(data[1], cString.getLength()-1));
-        CString<T> *result=(part1.concat(subSequence))->concat(part2);
+        CString<T> part1(cString.getSubsequence(0, data[0]));
+        CString<T> part2(cString.getSubsequence(data[1], cString.getLength() - 1));
+        CString<T> *result = (part1.concat(subSequence))->concat(part2);
         result->print();
         delete result;
         wcout << endl;
@@ -515,7 +579,7 @@ void cstringImplementationSpeed(Sequence<wchar_t> *sequence) {
     wcout << typeid(cString).name() << " time = " << t << endl;
 }
 
-template <class T>
+template<class T>
 void cstring_addElementSpeed() {
     wprintf(L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray\n");
     cstringImplementationSpeed(new LinkedListSequence<wchar_t>());
@@ -524,42 +588,46 @@ void cstring_addElementSpeed() {
 
 // Главное меню
 
-template <class T>
+template<class T>
 void main_menu_stack() {
     MenuItem menu_stack[] = {
-            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_stack<T>},
-            {L"Конкатенация двух стеков", stack_concat<T>},
-            {L"Извлечение подпоследовательности (по заданным индексам)", stack_getSubSequence<T>},
-            {L"Поиск на вхождение подпоследовательности", stack_findSubSequence<T>},
+            {L"Применение функции map, where, reduce - ручной ввод данных",                        apply_map_where_reduce_stack<T>},
+            {L"Конкатенация двух стеков",                                                          stack_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)",                           stack_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности",                                          stack_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", stack_addElementSpeed<T>}};
-    menuLoop(L"Возможные операции", _countof(menu_stack),  menu_stack);
+    menuLoop(L"Возможные операции", _countof(menu_stack), menu_stack);
 }
-template <class T>
+
+
+template<class T>
 void main_menu_queue() {
     MenuItem menu_queue[] = {
-            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_queue<T>},
-            {L"Конкатенация двух стеков", queue_concat<T>},
-            {L"Извлечение подпоследовательности (по заданным индексам)", queue_getSubSequence<T>},
-            {L"Поиск на вхождение подпоследовательности", queue_findSubSequence<T>},
+            {L"Применение функции map, where, reduce - ручной ввод данных",                        apply_map_where_reduce_queue<T>},
+            {L"Конкатенация двух стеков",                                                          queue_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)",                           queue_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности",                                          queue_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", queue_addElementSpeed<T>}};
     menuLoop(L"Возможные операции", _countof(menu_queue), menu_queue);
 }
-template <class T>
+
+template<class T>
 void main_menu_deque() {
     MenuItem menu_deque[] = {
-            {L"Применение функции map, where, reduce - ручной ввод данных", apply_map_where_reduce_deque<T>},
-            {L"Конкатенация двух стеков", deque_concat<T>},
-            {L"Извлечение подпоследовательности (по заданным индексам)", deque_getSubSequence<T>},
-            {L"Поиск на вхождение подпоследовательности", deque_findSubSequence<T>},
+            {L"Применение функции map, where, reduce - ручной ввод данных",                        apply_map_where_reduce_deque<T>},
+            {L"Конкатенация двух стеков",                                                          deque_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)",                           deque_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности",                                          deque_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", deque_addElementSpeed<T>}};
     menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
 }
-template <class T>
+
+template<class T>
 void main_menu_cstring() {
     MenuItem menu_cstring[] = {
-            {L"Конкатенация двух стеков", cstring_concat<T>},
-            {L"Извлечение подпоследовательности (по заданным индексам)", cstring_getSubSequence<T>},
-            {L"Поиск на вхождение подпоследовательности", cstring_findSubSequence<T>},
+            {L"Конкатенация двух стеков",                                                          cstring_concat<T>},
+            {L"Извлечение подпоследовательности (по заданным индексам)",                           cstring_getSubSequence<T>},
+            {L"Поиск на вхождение подпоследовательности",                                          cstring_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_addElementSpeed<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_devide<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_change<T>}};
@@ -569,36 +637,39 @@ void main_menu_cstring() {
 void deque_menu() {
     wprintf(L"== Deque-Выберите тип данных ==\n");
 
-    MenuItem menu_deque[] = {{L"Целые числа (int)", main_menu_deque<int>},
-                       {L"Вещественные числа (double)", main_menu_deque<double>},
-                       {L"Комплексные числа (complex<double>)", main_menu_deque<complex<double>>},
-                       {L"Строки/символы (string)", main_menu_deque<wstring>}};
+    MenuItem menu_deque[] = {{L"Целые числа (int)",                   main_menu_deque<int>},
+                             {L"Вещественные числа (double)",         main_menu_deque<double>},
+                             {L"Комплексные числа (complex<double>)", main_menu_deque<complex<double>>},
+                             {L"Строки/символы (string)",             main_menu_deque<wstring>}};
     menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
 }
+
 void queue_menu() {
     wprintf(L"== Queue-Выберите тип данных ==\n");
 
-    MenuItem menu_queue[] = {{L"Целые числа (int)", main_menu_queue<int>},
-                       {L"Вещественные числа (double)", main_menu_queue<double>},
-                       {L"Комплексные числа (complex<double>)", main_menu_queue<complex<double>>},
-                       {L"Строки/символы (string)", main_menu_queue<wstring>}};
-    menuLoop(L"Возможные операции", _countof(menu_queue),   menu_queue);
+    MenuItem menu_queue[] = {{L"Целые числа (int)",                   main_menu_queue<int>},
+                             {L"Вещественные числа (double)",         main_menu_queue<double>},
+                             {L"Комплексные числа (complex<double>)", main_menu_queue<complex<double>>},
+                             {L"Строки/символы (string)",             main_menu_queue<wstring>}};
+    menuLoop(L"Возможные операции", _countof(menu_queue), menu_queue);
 }
 
 void stack_menu() {
     wprintf(L"== Stack-Выберите тип данных ==\n");
 
-    MenuItem menu_stack[] = {{L"Целые числа (int)", main_menu_stack<int>},
-                       {L"Вещественные числа (double)", main_menu_stack<double>},
-                       {L"Комплексные числа (complex<double>)", main_menu_stack<complex<double>>},
-                       {L"Строки/символы (string)", main_menu_stack<wstring>}};
-    menuLoop(L"Возможные операции", _countof(menu_stack),   menu_stack);
+    MenuItem menu_stack[] = {{L"Целые числа (int)",                   main_menu_stack<int>},
+                             {L"Вещественные числа (double)",         main_menu_stack<double>},
+                             {L"Комплексные числа (complex<double>)", main_menu_stack<complex<double>>},
+                             {L"Строки/символы (string)",             main_menu_stack<wstring>},
+                             {L"Студенты/преподаватели",              main_menu_stack<Person>},
+                             {L"Студенты/преподаватели",              main_menu_stack<FunctionHolder>}};
+    menuLoop(L"Возможные операции", _countof(menu_stack), menu_stack);
 }
 
 void CString_menu() {
     wprintf(L"== CString-Выберите тип данных ==\n");
-    MenuItem menu_cstring[] = {{L" (wchar_t)", main_menu_cstring<wchar_t>},
-                       {L"Строки/символы (string)", main_menu_cstring<wstring>}};
+    MenuItem menu_cstring[] = {{L" (wchar_t)",              main_menu_cstring<wchar_t>},
+                               {L"Строки/символы (string)", main_menu_cstring<wstring>}};
     menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
 }
 // Основные операции с выбранным типом данных
@@ -614,9 +685,9 @@ int main() {
 #endif
     wprintf(L"== Тестирование операций ==\n");
 
-    MenuItem menu[] = {{L"Стек", stack_menu},
+    MenuItem menu[] = {{L"Стек",    stack_menu},
                        {L"Очередь", queue_menu},
-                       {L"Дек", deque_menu},
+                       {L"Дек",     deque_menu},
                        {L"CString", CString_menu}};
     try {
         menuLoop(L"Выберите тип элементов", _countof(menu), menu);
@@ -624,30 +695,3 @@ int main() {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
 }
-
-struct PersonID {
-    int id;
-};
-
-class Person {
-private:
-    PersonID id;
-    char *firstName;
-    char *middleName;
-    char *lastName;
-    time_t birthDate;
-
-public:
-    PersonID GetID() {
-        return id;
-    };
-    char *GetFirstName() {
-        return firstName;
-    };
-    char *GetMiddleName() {
-        return middleName;
-    };
-    char *GetLastName() {
-        return lastName;
-    };
-};

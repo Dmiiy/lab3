@@ -18,5 +18,8 @@ add_executable(lab3
         person.h
         CString.h
         Queue.h
+        Person.h
+        FunctionHolder.h
+        Functions.h
 )
 add_subdirectory(Google_tests)

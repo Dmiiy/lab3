@@ -187,6 +187,9 @@ CMakeFiles/lab3.dir/main.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
  C:\Users\dimak\CLionProjects\lab3\Common.h \
  C:\Users\dimak\CLionProjects\lab3\Sequence.h \
+ C:\Users\dimak\CLionProjects\lab3\Person.h \
+ C:\Users\dimak\CLionProjects\lab3\FunctionHolder.h \
+ C:\Users\dimak\CLionProjects\lab3\Functions.h \
  C:\Users\dimak\CLionProjects\lab3\linkedlist.h \
  C:\Users\dimak\CLionProjects\lab3\linkedlistsequence.h \
  C:\Users\dimak\CLionProjects\lab3\LinkedList.h \

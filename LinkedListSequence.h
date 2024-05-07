@@ -3,6 +3,7 @@
 
 #include "LinkedList.h"
 #include "Sequence.h"
+#include "Person.h"
 
 template<class T>
 class LinkedListSequence : public Sequence<T> {

@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include "Common.h"
+#include "Person.h"
+
 
 template<class T>
 class LinkedList {

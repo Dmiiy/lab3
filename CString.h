@@ -16,7 +16,7 @@ public:
         delete data;
         data = nullptr;
     }
-    // Пустой ли стек?
+
     bool empty() const {
         return data->getLength() == 0;
     }
@@ -27,10 +27,8 @@ public:
         data->append(item);
     }
 
-    T pop() {
-        T value = data->getLast();
-        data->removeAt(data->getLength() - 1);
-        return value;
+    T deletesymbol(int i) {
+        data->removeAt(i);
     }
     T operator[](int i) const {
         return data->get(i);
@@ -41,6 +39,7 @@ public:
     CString<T> *concat(CString<T> &string) {
         return new CString<T>(data->concat(string.data));
     }
+
     bool equals(CString<T> &string1, CString<T> &string2) {
         if (string1.data->getLength() != string2.data->getLength()) {
             return false;
@@ -53,6 +52,7 @@ public:
             return true;
         }
     }
+
     Sequence<T> *getSubsequence(int startIndex, int endIndex) const {
         return data->getSubsequence(startIndex, endIndex);
     }

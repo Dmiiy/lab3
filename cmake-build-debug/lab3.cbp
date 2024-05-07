@@ -388,6 +388,12 @@
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/DynamicArray.h">
 			<Option target="lab3"/>
 		</Unit>
+		<Unit filename="C:/Users/dimak/CLionProjects/lab3/FunctionHolder.h">
+			<Option target="lab3"/>
+		</Unit>
+		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Functions.h">
+			<Option target="lab3"/>
+		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Google_tests/lib/googlemock/src/gmock-all.cc">
 			<Option target="gmock"/>
 		</Unit>
@@ -409,6 +415,9 @@
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/LinkedListSequence.h">
 			<Option target="lab3"/>
 		</Unit>
+		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Person.h">
+			<Option target="lab3"/>
+		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Queue.h">
 			<Option target="lab3"/>
 		</Unit>
@@ -422,9 +431,6 @@
 			<Option target="lab3"/>
 		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/menu.h">
-			<Option target="lab3"/>
-		</Unit>
-		<Unit filename="C:/Users/dimak/CLionProjects/lab3/person.h">
 			<Option target="lab3"/>
 		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/CMakeLists.txt">
