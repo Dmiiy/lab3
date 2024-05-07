@@ -21,6 +21,7 @@
 #include "queue.h"
 #include "Person.h"
 #include "FunctionHolder.h"
+#include "Functions.h"
 
 
 
@@ -248,17 +249,16 @@ void apply_map_where_reduce_queue() {
 
     wprintf(L"Применяем операцию map\n");
     Queue<T> *mapRes = queue.map(map_function);
-    mapRes->print();  // Печатаем содержимое стека
+    mapRes->print(mapRes);  // Печатаем содержимое стека
     delete mapRes;    // Очищаем память
 
     wprintf(L"Применяем операцию where\n");
     Queue<T> *whereRes = queue.where(where_function);
-    whereRes->print();
+    whereRes->print(whereRes);
     delete whereRes;  // Очищаем память
 
     wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
     T reduceRes = queue.reduce(reduce_function);
-    wcout << L"Результат reduce: " << reduceRes << endl << endl;
 
     wprintf(L"\n");
 }
@@ -272,7 +272,7 @@ void queue_concat() {
         Queue<T> queue2(new LinkedListSequence<T>, L"Ввод элементов второй очереди");
 
         Queue<T> *result = queue1.concat(queue2);
-        result->print();
+        result->print(result);
         delete result;
 
         wprintf(L"\n");
@@ -355,17 +355,16 @@ void apply_map_where_reduce_deque() {
 
     wprintf(L"Применяем операцию map\n");
     Deque<T> *mapRes = deque.map(map_function);
-    mapRes->print();  // Печатаем содержимое стека
+    mapRes->print(mapRes);  // Печатаем содержимое стека
     delete mapRes;    // Очищаем память
 
     wprintf(L"Применяем операцию where\n");
     Deque<T> *whereRes = deque.where(where_function);
-    whereRes->print();
+    whereRes->print(whereRes);
     delete whereRes;  // Очищаем память
 
     wprintf(L"Применяем операцию reduce - сложение для всех чисел (конкатенация для строк)\n");
     T reduceRes = deque.reduce(reduce_function);
-    wcout << L"Результат reduce: " << reduceRes << endl << endl;
 
     wprintf(L"\n");
 }
@@ -379,7 +378,7 @@ void deque_concat() {
         Deque<T> deque2(new LinkedListSequence<T>, L"Ввод элементов второго дека");
 
         Deque<T> *result = deque1.concat(deque2);
-        result->print();
+        result->print(result);
         delete result;
 
         wprintf(L"\n");
@@ -508,7 +507,20 @@ void cstring_findSubSequence() {
         wcout << L"Exception: " << ex.what() << endl << endl;
     }
 }
+template<class T>
+void cstring_equal() {
+    wprintf(L"Поиск на вхождение подпоследовательности\n");
 
+    try {
+        CString<T> cString1(new LinkedListSequence<T>, L"Ввод элементов 1 строки");
+        CString<T> cString2(new LinkedListSequence<T>, L"Ввод элементов 2 строки");
+
+        bool result = cString1.equal(cString2);
+        wcout << L"Равны ли строки? " << result << endl << endl;
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
 template<class T>
 void cstring_devide() {
     wprintf(L"Разбиение строки на подстроки\n");
@@ -629,8 +641,9 @@ void main_menu_cstring() {
             {L"Извлечение подпоследовательности (по заданным индексам)",                           cstring_getSubSequence<T>},
             {L"Поиск на вхождение подпоследовательности",                                          cstring_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_addElementSpeed<T>},
-            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_devide<T>},
-            {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_change<T>}};
+            {L"Разбиение строки", cstring_devide<T>},
+            {L"Замена подстроки на строку", cstring_change<T>},
+            {L"Сравнение двух строк", cstring_change<T>}};
     menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
 }
 
@@ -640,7 +653,9 @@ void deque_menu() {
     MenuItem menu_deque[] = {{L"Целые числа (int)",                   main_menu_deque<int>},
                              {L"Вещественные числа (double)",         main_menu_deque<double>},
                              {L"Комплексные числа (complex<double>)", main_menu_deque<complex<double>>},
-                             {L"Строки/символы (string)",             main_menu_deque<wstring>}};
+                             {L"Строки/символы (string)",             main_menu_deque<wstring>},
+                             {L"Студенты/преподаватели",              main_menu_deque<Person>},
+                             {L"Функции",              main_menu_deque<FunctionHolder>}};
     menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
 }
 
@@ -650,7 +665,9 @@ void queue_menu() {
     MenuItem menu_queue[] = {{L"Целые числа (int)",                   main_menu_queue<int>},
                              {L"Вещественные числа (double)",         main_menu_queue<double>},
                              {L"Комплексные числа (complex<double>)", main_menu_queue<complex<double>>},
-                             {L"Строки/символы (string)",             main_menu_queue<wstring>}};
+                             {L"Строки/символы (string)",             main_menu_queue<wstring>},
+                             {L"Студенты/преподаватели",              main_menu_queue<Person>},
+                             {L"Функции",              main_menu_queue<FunctionHolder>}};
     menuLoop(L"Возможные операции", _countof(menu_queue), menu_queue);
 }
 
@@ -662,7 +679,7 @@ void stack_menu() {
                              {L"Комплексные числа (complex<double>)", main_menu_stack<complex<double>>},
                              {L"Строки/символы (string)",             main_menu_stack<wstring>},
                              {L"Студенты/преподаватели",              main_menu_stack<Person>},
-                             {L"Студенты/преподаватели",              main_menu_stack<FunctionHolder>}};
+                             {L"Функции",              main_menu_stack<FunctionHolder>}};
     menuLoop(L"Возможные операции", _countof(menu_stack), menu_stack);
 }
 

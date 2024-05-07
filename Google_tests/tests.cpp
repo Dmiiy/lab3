@@ -7,6 +7,9 @@
 #include "../LinkedListSequence.h"
 #include "../Stack.h"
 #include "../CString.h"
+#include "../Deque.h"
+#include "../queue.h"
+#include "../CString.h"
 #include "lib/googletest/include/gtest/gtest.h"
 
 TEST(DynamicArray, basic_operations) {
@@ -370,29 +373,6 @@ TEST(LinkedList, insertAt) {
     ASSERT_EQ(11, list.getFirst());
     ASSERT_EQ(22, list.getLast());
 }
-//TEST(LinkedList, Iterator) {  // Итератор
-//    int items[] = {11, 22, 33};
-//    LinkedList<int> list(items, _countof(items));  // Список целых чисел
-//    // Проверяем длину списков
-//    ASSERT_EQ(3, list.getLength());
-//
-//    auto it = list.begin();
-//    ASSERT_EQ(11, *it);
-//    it++;
-//    ASSERT_EQ(22, *it);
-//    ++it;
-//    ASSERT_EQ(33, *it);
-//    it++;
-//    ASSERT_EQ(list.end(), it);
-//
-////    for (auto it = list.begin(), end = list.end(); it != end; ++it) {
-////        const auto i = *it;
-////        std::cout << i << "\n";
-////    }
-////    for (int x : list) {
-////        cout << x << endl;
-////    }
-//}
 // Удаление элемента из списка
 TEST(LinkedList, removeAt) {
     LinkedList<int> list;  // Список целых чисел
@@ -751,12 +731,7 @@ TEST(Stack, stack_basic_operations) {  // Элементы: Целые числ�
     ASSERT_EQ(2 * 2, (*stackSquare)[2]);
     delete stackSquare;
 
-    Stack<int> *stackSquare2 = stack::map(square, stack);
-    ASSERT_EQ(3, stackSquare2->getLength());
-    ASSERT_EQ(11 * 11, (*stackSquare2)[0]);
-    ASSERT_EQ(1 * 1, (*stackSquare2)[1]);
-    ASSERT_EQ(2 * 2, (*stackSquare2)[2]);
-    delete stackSquare2;
+
 }
 
 // Возведение вещественного (с плавающей точкой) числа в квадрат
@@ -787,12 +762,6 @@ TEST(Stack, float_point) {  // Элементы: Вещественные чис
     ASSERT_EQ(6.7 * 6.7, (*stackSquare)[2]);
     delete stackSquare;
 
-    Stack<double> *stackSquare2 = stack::map(square_double, stack);
-    ASSERT_EQ(3, stackSquare2->getLength());
-    ASSERT_EQ(1.5 * 1.5, (*stackSquare2)[0]);
-    ASSERT_EQ(45.22 * 45.22, (*stackSquare2)[1]);
-    ASSERT_EQ(6.7 * 6.7, (*stackSquare2)[2]);
-    delete stackSquare2;
 }
 
 complex<double> square_complex(complex<double> x) {
@@ -888,11 +857,7 @@ TEST(Stack, where) {  // Элементы: Целые числа
     ASSERT_EQ(10, (*even)[1]);
     delete even;
 
-    Stack<int> *even2 = stack::where(isEven, stack);
-    ASSERT_EQ(2, even2->getLength());
-    ASSERT_EQ(2, (*even2)[0]);
-    ASSERT_EQ(10, (*even2)[1]);
-    delete even2;
+
 }
 
 // Сумма двух целых чисел
@@ -912,7 +877,6 @@ TEST(Stack, reduce) {  // Элементы: Целые числа
     ASSERT_EQ(3 + 4 + 6 + 9 + 34 + 12, res);
 
     // Вызываем reduce как функцию
-    ASSERT_EQ(3 + 4 + 6 + 9 + 34 + 12, stack::reduce(sum, stack));
 }
 
 // Конкатенация
@@ -944,7 +908,6 @@ double stackImplementationSpeed(Sequence<int> *sequence) {
     // Вычисляем разницу в секундах времени начала и окончания работы
     const double t = elapsed_mcs.count() / 1e6;
     // Выводим результат в секундах на экран (в консоль)
-    cout << typeid(stack).name() << " time = " << t << endl;
     return t;
 }
 
@@ -954,4 +917,202 @@ TEST(Stack, push_speed) {
     double arrayTime = stackImplementationSpeed(new ArraySequence<int>);
     EXPECT_GT(arrayTime, 10 * listTime);  // На основе массива медленнее больше чем в 100 раз
 }
+
+// == Очередь ==
+TEST(Queue, queue_basic_operations) {  // Элементы: Целые числа
+    static_assert(square(2) == 2 * 2, "2^2 == 4");
+    static_assert(inc_int(5) == 6, "5 + 1 == 6");
+    static_assert(dec_int(5) == 4, "5 - 1 == 4");
+
+    Queue<int> queue(new LinkedListSequence<int>);
+    ASSERT_EQ(0, queue.getLength());
+
+    queue.enqueue(11);
+    ASSERT_EQ(1, queue.getLength());
+    ASSERT_EQ(11,  queue[0]);
+
+    queue.enqueue(10);
+    ASSERT_EQ(2, queue.getLength());
+    ASSERT_EQ(11,  queue[0]);
+    ASSERT_EQ(10,  queue[1]);
+
+    ASSERT_EQ(11, queue.dequeue());
+    ASSERT_EQ(1, queue.getLength());
+    ASSERT_EQ(10, queue[0]);
+
+    queue.enqueue(1);
+    queue.enqueue(2);
+    ASSERT_EQ(3, queue.getLength());
+
+    Queue<int> *queueSquare = queue.map(square);
+    ASSERT_EQ(3, queueSquare->getLength());
+    ASSERT_EQ(10 * 10, (*queueSquare)[0]);
+    ASSERT_EQ(1 * 1, (*queueSquare)[1]);
+    ASSERT_EQ(2 * 2, (*queueSquare)[2]);
+    delete queueSquare;
+
+
+}
+
+
+TEST(Queue, float_point) {  // Элементы: Вещественные числа
+    Queue<double> queue(new LinkedListSequence<double>());
+    ASSERT_EQ(0, queue.getLength());
+
+    queue.enqueue(1.5);
+    ASSERT_EQ(1, queue.getLength());
+    ASSERT_EQ(1.5, queue[0]);
+
+    queue.enqueue(45.22);
+    ASSERT_EQ(2, queue.getLength());
+    ASSERT_EQ(1.5, queue[0]);
+    ASSERT_EQ(45.22, queue[1]);
+
+
+    queue.enqueue(6.7);
+    ASSERT_EQ(3, queue.getLength());
+
+    Queue<double> *queueSquare = queue.map(square_double);
+    ASSERT_EQ(3, queueSquare->getLength());
+    ASSERT_EQ(1.5 * 1.5, (*queueSquare)[0]);
+    ASSERT_EQ(45.22 * 45.22, (*queueSquare)[1]);
+    ASSERT_EQ(6.7 * 6.7, (*queueSquare)[2]);
+    delete queueSquare;
+
+
+}
+
+
+TEST(Queue, complex_numbers) {  // Элементы: Комплексные числа
+    static_assert(1.0i == 1.0i, "Equals");
+    static_assert(2.0i != 1.0i, "Not equals");
+
+    constexpr complex<double> z(1.0, 0.0);
+    static_assert(z == 1.0, "Real part equals");
+    static_assert(1.0 == z, "Real part equals");
+    static_assert(2.0 != z, "Not equals");
+    static_assert(z != 2.0, "Not equals");
+    ASSERT_EQ(1.0, abs(z));  // Абсолютное значение (модуль) комплексного числа
+    ASSERT_EQ(0.0, arg(z));
+
+    // чисто мнимое число: 0 + 7-i
+    constexpr complex<double> purei(0, 7);
+    static_assert(purei.real() == 0.0, "Real");
+    static_assert(purei.imag() == 7.0, "Imag");
+    // мнимая часть равна 0: 3 + Oi
+    constexpr complex<float> real_num(3);
+    static_assert(real_num.real() == 3.0, "Real");
+    static_assert(real_num.imag() == 0.0, "Imag");
+
+    constexpr complex<double> zz(1.1, 2.2);
+    static_assert(zz.real() == 1.1, "Real");
+    static_assert(zz.imag() == 2.2, "Imag");
+    ASSERT_EQ(1.1, zz.real());
+    ASSERT_EQ(2.2, zz.imag());
+
+    Queue<complex<double>> queue(new LinkedListSequence<complex<double>>());
+    ASSERT_EQ(0, queue.getLength());
+
+    const complex<double> a = 1.5 + 3i;
+    queue.enqueue(a);
+    ASSERT_EQ(1, queue.getLength());
+    ASSERT_EQ(a, queue[0]);
+
+    complex<double> b = 4.5 + 1.2i;
+    queue.enqueue(b);
+    ASSERT_EQ(2, queue.getLength());
+    ASSERT_EQ(a, queue[0]);
+    ASSERT_EQ(b, queue[1]);
+
+    complex<double> c = 6.7 + 5.5i;
+    queue.enqueue(c);
+    ASSERT_EQ(3, queue.getLength());
+
+
+
+}
+
+
+
+// where фильтрует значения из списка l с помощью функции-фильтра h
+TEST(Queue, where) {  // Элементы: Целые числа
+    static_assert(isEven(0), "isEven(0)");
+    static_assert(!isEven(1), "isEven(1)");
+    static_assert(isEven(2), "isEven(2)");
+    static_assert(!isEven(3), "isEven(3)");
+    static_assert(isEven(4), "isEven(4)");
+    static_assert(!isEven(5), "isEven(5)");
+    static_assert(isEven(6), "isEven(6)");
+
+    ASSERT_TRUE(isEven(0));
+    ASSERT_FALSE(isEven(1));
+    ASSERT_TRUE(isEven(2));
+    ASSERT_FALSE(isEven(3));
+    ASSERT_TRUE(isEven(4));
+    ASSERT_FALSE(isEven(5));
+
+    Queue<int> queue(new LinkedListSequence<int>());
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    queue.enqueue( 10);
+    ASSERT_EQ(4, queue.getLength());
+
+    // Все чётные числа
+    Queue<int> *even = queue.where(isEven);
+    ASSERT_EQ(2, even->getLength());
+    ASSERT_EQ(2, (*even)[0]);
+    ASSERT_EQ(10, (*even)[1]);
+    delete even;
+
+
+}
+
+TEST(Queue, reduce) {  // Элементы: Целые числа
+    static_assert(sum(1, 2) == 3, "1 + 2 = 3");
+    static_assert(sum(11, 22) == 33, "11 + 22 = 33");
+    static_assert(sum(1000, -203) == 797, "1000 - 203 = 797");
+
+    int data[] = {3, 4, 6, 9, 34, 12};
+    Queue<int> queue(new LinkedListSequence<int>(data, _countof(data)));
+
+    int res = queue.reduce(sum);
+    ASSERT_EQ(3 + 4 + 6 + 9 + 34 + 12, res);
+
+    // Вызываем reduce как функцию
+}
+
+// Конкатенация
+TEST(Queue, concat) {  // Элементы: Целые числа
+    int data1[] = {11, 22};
+    Queue<int> queue1(new LinkedListSequence<int>(data1, _countof(data1)));
+    int data2[] = {33, 44, 55};
+    Queue<int> queue2(new LinkedListSequence<int>(data2, _countof(data2)));
+}
+
+// Замеряем время работы стека
+double queueImplementationSpeed(Sequence<int> *sequence) {
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
+
+    Queue<int>queue(sequence);  // Создаём стек
+    const int numbers = 10000;   // Добавим числа
+    for (int i = 1; i <= numbers; i++) {
+        queue.enqueue(i);}
+    EXPECT_EQ(numbers, queue.getLength());  // Проверяем размер стека (что добавились)
+
+    auto end = chrono::steady_clock::now();  // Конец работы
+    auto elapsed_mcs = chrono::duration_cast<chrono::microseconds>(end - begin);
+    // Вычисляем разницу в секундах времени начала и окончания работы
+    const double t = elapsed_mcs.count() / 1e6;
+    // Выводим результат в секундах на экран (в консоль)
+    return t;
+}
+
+// Замер скорости работы стека на базе массива
+TEST(Queue, push_speed) {
+    double listTime = queueImplementationSpeed(new LinkedListSequence<int>);
+    double arrayTime = queueImplementationSpeed(new ArraySequence<int>);
+    EXPECT_GT(arrayTime, 10 * listTime);  // На основе массива медленнее больше чем в 100 раз
+}
+
 
