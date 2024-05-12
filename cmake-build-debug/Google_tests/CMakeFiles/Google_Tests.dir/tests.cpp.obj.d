@@ -176,6 +176,9 @@ Google_tests/CMakeFiles/Google_Tests.dir/tests.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/iostream \
  C:/Users/dimak/CLionProjects/lab3/Common.h \
  C:/Users/dimak/CLionProjects/lab3/Sequence.h \
+ C:/Users/dimak/CLionProjects/lab3/Person.h \
+ C:/Users/dimak/CLionProjects/lab3/FunctionHolder.h \
+ C:/Users/dimak/CLionProjects/lab3/Functions.h \
  C:/Users/dimak/CLionProjects/lab3/LinkedList.h \
  C:/Users/dimak/CLionProjects/lab3/LinkedListSequence.h \
  C:/Users/dimak/CLionProjects/lab3/LinkedList.h \
@@ -186,6 +189,8 @@ Google_tests/CMakeFiles/Google_Tests.dir/tests.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_vector.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_bvector.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/vector.tcc \
+ C:/Users/dimak/CLionProjects/lab3/Deque.h \
+ C:/Users/dimak/CLionProjects/lab3/Queue.h \
  C:\Users\dimak\CLionProjects\lab3\Google_tests\lib/googletest/include/gtest/gtest.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/memory \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_tempbuf.h \

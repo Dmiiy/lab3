@@ -515,7 +515,7 @@ void cstring_equal() {
         CString<T> cString1(new LinkedListSequence<T>, L"Ввод элементов 1 строки");
         CString<T> cString2(new LinkedListSequence<T>, L"Ввод элементов 2 строки");
 
-        bool result = cString1.equal(cString2);
+        bool result = cString1.equals(cString1, cString2);
         wcout << L"Равны ли строки? " << result << endl << endl;
     } catch (IndexOutOfRange &ex) {
         wcout << L"Exception: " << ex.what() << endl << endl;
@@ -643,7 +643,7 @@ void main_menu_cstring() {
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_addElementSpeed<T>},
             {L"Разбиение строки", cstring_devide<T>},
             {L"Замена подстроки на строку", cstring_change<T>},
-            {L"Сравнение двух строк", cstring_change<T>}};
+            {L"Сравнение двух строк", cstring_equal<T>}};
     menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
 }
 
