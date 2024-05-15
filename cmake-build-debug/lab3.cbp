@@ -373,9 +373,6 @@
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/ArraySequence.h">
 			<Option target="lab3"/>
 		</Unit>
-		<Unit filename="C:/Users/dimak/CLionProjects/lab3/ArraySequenceImmutable.h">
-			<Option target="lab3"/>
-		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/CString.h">
 			<Option target="lab3"/>
 		</Unit>
@@ -419,6 +416,9 @@
 			<Option target="lab3"/>
 		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Queue.h">
+			<Option target="lab3"/>
+		</Unit>
+		<Unit filename="C:/Users/dimak/CLionProjects/lab3/SegmentedDeque.h">
 			<Option target="lab3"/>
 		</Unit>
 		<Unit filename="C:/Users/dimak/CLionProjects/lab3/Sequence.h">

@@ -204,4 +204,5 @@ CMakeFiles/lab3.dir/main.cpp.obj: \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/stl_bvector.h \
  C:/Program\ Files/JetBrains/CLion2023.3/bin/mingw/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/bits/vector.tcc \
  C:\Users\dimak\CLionProjects\lab3\deque.h \
- C:\Users\dimak\CLionProjects\lab3\queue.h
+ C:\Users\dimak\CLionProjects\lab3\queue.h \
+ C:\Users\dimak\CLionProjects\lab3\SegmentedDeque.h

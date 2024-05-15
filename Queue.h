@@ -53,28 +53,28 @@ public:
     }
 
     void print(Queue<int> *queue) {
-        wcout << L"Stack size = " <<queue-> data->getLength() << endl;
+        wcout << L"Queue size = " <<queue-> data->getLength() << endl;
         for (int i = 0; i <queue-> data->getLength(); i++) {
             wcout <<queue-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Queue<double> *queue) {
-        wcout << L"Stack size = " <<queue-> data->getLength() << endl;
+        wcout << L"Queue size = " <<queue-> data->getLength() << endl;
         for (int i = 0; i <queue-> data->getLength(); i++) {
             wcout <<queue-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Queue<wstring> *queue) {
-        wcout << L"Stack size = " <<queue-> data->getLength() << endl;
+        wcout << L"Queue size = " <<queue-> data->getLength() << endl;
         for (int i = 0; i <queue-> data->getLength(); i++) {
             wcout <<queue-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Queue<std::complex<double>> *queue) {
-        wcout << L"Stack size = " <<queue-> data->getLength() << endl;
+        wcout << L"Queue size = " <<queue-> data->getLength() << endl;
         for (int i = 0; i <queue-> data->getLength(); i++) {
             wcout <<queue-> data->get(i) << L" ";
         }
@@ -88,8 +88,8 @@ public:
         wcout << endl;
     }
     void print(Queue<FunctionHolder> *queue) {
-        wcout << L"Stack size = " <<queue-> data->getLength() << endl;
-        wprintf(L"Ввеите два целых числа: ");
+        wcout << L"Queue size = " <<queue-> data->getLength() << endl;
+        wprintf(L"Введите два целых числа: ");
         int a, b;
         wcin >> a >> b;
         for (int i = 0; i <queue-> data->getLength(); i++) {

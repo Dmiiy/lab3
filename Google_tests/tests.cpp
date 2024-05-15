@@ -9,6 +9,7 @@
 #include "../CString.h"
 #include "../Deque.h"
 #include "../queue.h"
+#include "../SegmentedDeque.h"
 #include "../CString.h"
 #include "lib/googletest/include/gtest/gtest.h"
 
@@ -950,8 +951,6 @@ TEST(Queue, queue_basic_operations) {  // Элементы: Целые числ�
     ASSERT_EQ(1 * 1, (*queueSquare)[1]);
     ASSERT_EQ(2 * 2, (*queueSquare)[2]);
     delete queueSquare;
-
-
 }
 
 

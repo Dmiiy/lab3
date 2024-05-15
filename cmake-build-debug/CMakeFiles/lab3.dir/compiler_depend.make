@@ -199,6 +199,7 @@ CMakeFiles/lab3.dir/main.cpp.obj: C:/Users/dimak/CLionProjects/lab3/main.cpp \
   C:/Users/dimak/CLionProjects/lab3/Functions.h \
   C:/Users/dimak/CLionProjects/lab3/LinkedList.h \
   C:/Users/dimak/CLionProjects/lab3/Person.h \
+  C:/Users/dimak/CLionProjects/lab3/SegmentedDeque.h \
   C:/Users/dimak/CLionProjects/lab3/Sequence.h \
   C:/Users/dimak/CLionProjects/lab3/Stack.h \
   C:/Users/dimak/CLionProjects/lab3/ArraySequence.h \
@@ -610,6 +611,8 @@ C:/Users/dimak/CLionProjects/lab3/FunctionHolder.h:
 C:/Users/dimak/CLionProjects/lab3/Functions.h:
 
 C:/Users/dimak/CLionProjects/lab3/Person.h:
+
+C:/Users/dimak/CLionProjects/lab3/SegmentedDeque.h:
 
 C:/Users/dimak/CLionProjects/lab3/Sequence.h:
 

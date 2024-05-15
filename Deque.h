@@ -84,43 +84,43 @@ public:
     }
 
     void print(Deque<int> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
         for (int i = 0; i <deque-> data->getLength(); i++) {
             wcout <<deque-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Deque<double> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
         for (int i = 0; i <deque-> data->getLength(); i++) {
             wcout <<deque-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Deque<wstring> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
         for (int i = 0; i <deque-> data->getLength(); i++) {
             wcout <<deque-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Deque<std::complex<double>> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
         for (int i = 0; i <deque-> data->getLength(); i++) {
             wcout <<deque-> data->get(i) << L" ";
         }
         wcout << endl;
     }
     void print(Deque<Person> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
         for (int i = 0; i <deque-> data->getLength(); i++) {
             wcout <<L"ID: "<<deque-> data->get(i).GetID().id<< L" Фамилия: "<< deque-> data->get(i).GetLastName() << L" Имя: "<< deque-> data->get(i).GetFirstName() << L" Отчество: "<< deque-> data->get(i).GetMiddleName() << L"| ";
         }
         wcout << endl;
     }
     void print(Deque<FunctionHolder> *deque) {
-        wcout << L"Stack size = " <<deque-> data->getLength() << endl;
-        wprintf(L"Ввеите два целых числа: ");
+        wcout << L"Deque size = " <<deque-> data->getLength() << endl;
+        wprintf(L"Введите два целых числа: ");
         int a, b;
         wcin >> a >> b;
         for (int i = 0; i <deque-> data->getLength(); i++) {

@@ -21,6 +21,7 @@
 #include "queue.h"
 #include "Person.h"
 #include "FunctionHolder.h"
+#include "SegmentedDeque.h"
 #include "Functions.h"
 
 
@@ -35,14 +36,14 @@ void print_sequence(Sequence<T> *sequence) {
     wcout << endl;
 }
 void print_sequence(Sequence<Person> *sequence) {
-    wcout << L"Stack size = " <<sequence->getLength() << endl;
+    wcout << L"size = " <<sequence->getLength() << endl;
     for (int i = 0; i <sequence->getLength(); i++) {
         wcout <<L"ID: "<<sequence->get(i).GetID().id<< L" Фамилия: "<<sequence-> get(i).GetLastName() << L" Имя: "<<sequence->get(i).GetFirstName() << L" Отчество: "<<sequence->get(i).GetMiddleName() << L"| ";
     }
     wcout << endl;
 }
 void print_sequence(Sequence<FunctionHolder> *sequence) {
-    wcout << L"Stack size = " <<sequence->getLength() << endl;
+    wcout << L"size = " <<sequence->getLength() << endl;
     wprintf(L"Ввеите два целых числа: ");
     int a, b;
     wcin >> a >> b;
@@ -142,6 +143,8 @@ template<class T>
 void apply_map_where_reduce_stack() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
     Stack<T> stack(new LinkedListSequence<T>, L"Ввод элементов первого стека");
+    wprintf(L"Введенный стек: \n");
+    stack.print(&stack);
     wprintf(L"Применяем операцию map\n");
     Stack<T> *mapRes = stack.map(map_function);
     mapRes->print(mapRes);
@@ -166,6 +169,10 @@ void stack_concat() {
         Stack<T> stack1(new LinkedListSequence<T>, L"Ввод элементов первого стека");
         Stack<T> stack2(new LinkedListSequence<T>, L"Ввод элементов второго стека");
 
+        wprintf(L"Введенные стеки: \n");
+        stack1.print(&stack1);
+        stack2.print(&stack2);
+        wprintf(L"Результат конкатенации: \n");
         Stack<T> *result = stack1.concat(stack2);
         result->print(result);
         delete result;
@@ -187,7 +194,9 @@ void stack_getSubSequence() {
         wcout << L"Введите конечный индекс: ";
         int endIndex;
         wcin >> endIndex;
-
+        wprintf(L"Введенный стек: \n");
+        stack.print(&stack);
+        wprintf(L"Результат извлечения подпоследовательности:\n");
         Sequence<T> *result = stack.getSubsequence(startIndex, endIndex);
         print_sequence(result);
         delete result;
@@ -207,6 +216,10 @@ void stack_findSubSequence() {
         Stack<T> stack(new LinkedListSequence<T>, L"Ввод элементов стека");
         Stack<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
 
+        wprintf(L"Введенная последовательность: \n");
+        stack.print(&stack);
+        wprintf(L"Введенная подпоследовательность: \n");
+        subSequence.print(&subSequence);
         int index = stack.findSubsequence(subSequence);
         wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -246,7 +259,8 @@ void apply_map_where_reduce_queue() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
 
     Queue<T> queue(new LinkedListSequence<T>, L"Ввод данных очереди");
-
+    wprintf(L"Введенная очередь: \n");
+    queue.print(&queue);
     wprintf(L"Применяем операцию map\n");
     Queue<T> *mapRes = queue.map(map_function);
     mapRes->print(mapRes);  // Печатаем содержимое стека
@@ -271,6 +285,10 @@ void queue_concat() {
         Queue<T> queue1(new LinkedListSequence<T>, L"Ввод элементов первой очереди");
         Queue<T> queue2(new LinkedListSequence<T>, L"Ввод элементов второй очереди");
 
+        wprintf(L"Введенные очереди: \n");
+        queue1.print(&queue1);
+        queue2.print(&queue2);
+        wprintf(L"Результат конкатенации: \n");
         Queue<T> *result = queue1.concat(queue2);
         result->print(result);
         delete result;
@@ -286,13 +304,15 @@ void queue_getSubSequence() {
     wprintf(L"Извлечение подпоследовательности (по заданным индексам)\n");
     try {
         Queue<T> queue(new LinkedListSequence<T>, L"Ввод элементов очереди");
+        wcout << L"Введенная очередь: \n";
+        queue.print(&queue);
         wcout << L"Введите начальный индекс: ";
         int startIndex;
         wcin >> startIndex;
         wcout << L"Введите конечный индекс: ";
         int endIndex;
         wcin >> endIndex;
-
+        wprintf(L"Результат извлечения подпоследовательности: \n");
         Sequence<T> *result = queue.getSubsequence(startIndex, endIndex);
         print_sequence(result);
         delete result;
@@ -311,7 +331,10 @@ void queue_findSubSequence() {
         LinkedListSequence<T> linkedListSequence;
         Queue<T> queue(new LinkedListSequence<T>, L"Ввод элементов очереди");
         Queue<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
-
+        wprintf(L"Введенная очередь: \n");
+        queue.print(&queue);
+        wprintf(L"Введенная подпоследовательность: \n");
+        subSequence.print(&subSequence);
         int index = queue.findSubsequence(subSequence);
         wcout << L"Позиция подполедовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -351,8 +374,10 @@ template<class T>
 void apply_map_where_reduce_deque() {
     wprintf(L"Применение функций map, where, reduce - ручной ввод данных\n");
 
-    Deque<T> deque(new LinkedListSequence<T>, L"Ввод данных дека");  // Стек из элементом типа T
+    Deque<T> deque(new LinkedListSequence<T>, L"Ввод данных дека");
 
+    wprintf(L"Введенный дек: \n");
+    deque.print(&deque);
     wprintf(L"Применяем операцию map\n");
     Deque<T> *mapRes = deque.map(map_function);
     mapRes->print(mapRes);  // Печатаем содержимое стека
@@ -377,6 +402,10 @@ void deque_concat() {
         Deque<T> deque1(new LinkedListSequence<T>, L"Ввод элементов первого дека");
         Deque<T> deque2(new LinkedListSequence<T>, L"Ввод элементов второго дека");
 
+        wprintf(L"Введенные деки: \n");
+        deque1.print(&deque1);
+        deque2.print(&deque2);
+        wprintf(L"Результат конкатенации: \n");
         Deque<T> *result = deque1.concat(deque2);
         result->print(result);
         delete result;
@@ -399,6 +428,9 @@ void deque_getSubSequence() {
         int endIndex;
         wcin >> endIndex;
 
+        wprintf(L"Введенный дек: \n");
+        deque.print(&deque);
+        wprintf(L"Результат извлечения подпоследовательности: \n");
         Sequence<T> *result = deque.getSubsequence(startIndex, endIndex);
         print_sequence(result);
         delete result;
@@ -418,6 +450,10 @@ void deque_findSubSequence() {
         Deque<T> deque(new LinkedListSequence<T>, L"Ввод элементов дека");
         Deque<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
 
+        wprintf(L"Введенный дек: \n");
+        deque.print(&deque);
+        wprintf(L"Введенная подпоследовательность: \n");
+        subSequence.print(&subSequence);
         int index = deque.findSubsequence(subSequence);
         wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -451,6 +487,40 @@ void deque_addElementSpeed() {
     dequeImplementationSpeed(new ArraySequence<int>());
 }
 
+//Segmented deque
+
+template<class T>
+void deque_segmented_basic_operations() {
+    wprintf(L"Базовые операции сегментированного дека\n");
+    int n;
+    wcout << L"Введите количество элементов в одном сегменте: ";
+    wcin >> n;
+    try {
+        SegmentedDeque<T> deque1(n, L"Ввод элементов дека");
+        deque1.print(&deque1);
+        wprintf(L"Сколько элементов будет удалено: ");
+        int k;
+        wcin >> k;
+        for (int i = 0; i < k; i++) {
+            wprintf(L"Введите 1, если хотите удалить элемент с начала, 0, если с конца: ");
+            int where;
+            wcin >> where;
+            if (where==1) {
+                deque1.popFront();
+                deque1.print(&deque1);
+            }else if(where==0) {
+                deque1.popBack();
+                deque1.print(&deque1);
+            }else{
+                wcout << L"Неверно введено значение" << endl;
+            }
+        }
+        wprintf(L"\n");
+    } catch (IndexOutOfRange &ex) {
+        wcout << L"Exception: " << ex.what() << endl << endl;
+    }
+}
+
 //Cstring
 
 template<class T>
@@ -461,6 +531,10 @@ void cstring_concat() {
         CString<T> cString1(new LinkedListSequence<T>, L"Ввод элементов первой строки");
         CString<T> cString2(new LinkedListSequence<T>, L"Ввод элементов второй строки");
 
+        wprintf(L"Введенные строки: \n");
+        cString1.print();
+        cString2.print();
+        wprintf(L"Результат конкатенации: \n");
         CString<T> *result = cString1.concat(cString2);
         result->print();
         delete result;
@@ -483,6 +557,9 @@ void cstring_getSubSequence() {
         int endIndex;
         wcin >> endIndex;
 
+        wprintf(L"Введенная строка: \n");
+        cString.print();
+        wprintf(L"Результат извлеченная подпоследовательность: \n");
         Sequence<T> *result = cString.getSubsequence(startIndex, endIndex);
         print_sequence(result);
         delete result;
@@ -500,7 +577,10 @@ void cstring_findSubSequence() {
     try {
         CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
         CString<T> subSequence(new LinkedListSequence<T>, L"Ввод подпоследовательности");
-
+        wprintf(L"Введенная строка: \n");
+        cString.print();
+        wprintf(L"Введенная подстрока: \n");
+        subSequence.print();
         int index = cString.findSubsequence(subSequence);
         wcout << L"Позиция подпоследовательности = " << index << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -509,12 +589,15 @@ void cstring_findSubSequence() {
 }
 template<class T>
 void cstring_equal() {
-    wprintf(L"Поиск на вхождение подпоследовательности\n");
+    wprintf(L"Равенство строк\n");
 
     try {
         CString<T> cString1(new LinkedListSequence<T>, L"Ввод элементов 1 строки");
         CString<T> cString2(new LinkedListSequence<T>, L"Ввод элементов 2 строки");
 
+        wprintf(L"Введенные строки: \n");
+        cString1.print();
+        cString2.print();
         bool result = cString1.equals(cString1, cString2);
         wcout << L"Равны ли строки? " << result << endl << endl;
     } catch (IndexOutOfRange &ex) {
@@ -534,6 +617,9 @@ void cstring_devide() {
     }
     try {
         CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки");
+        wprintf(L"Введенная строка: \n");
+        cString.print();
+        wprintf(L"Результат разбиения: \n");
         CString<T>(cString.getSubsequence(0, data[0])).print();
         for (int i = 0; i < N; i++) {
             CString<T>(cString.getSubsequence(data[i], data[i + 1])).print();
@@ -552,13 +638,18 @@ void cstring_change() {
     wprintf(L"Изменение подстрок\n");
     try {
         CString<T> cString(new LinkedListSequence<T>, L"Ввод элементов строки в которой будет изменена подстрока");
+        wprintf(L"Введенная строка: \n");
+        cString.print();
         CString<T> subSequence(new LinkedListSequence<T>, L"Ввод строки для изменения");
+        wprintf(L"Введенная подстрока: \n");
+        subSequence.print();
         wprintf(L"Введите индексы между которыми будет изменена подстрока: ");
         int data[2];
         for (int i = 0; i < 2; i++) {
             wprintf(L"Введите %d индекс : ", i);
             wcin >> data[i];
         }
+        wprintf(L"Результат изменения: \n");
         CString<T> part1(cString.getSubsequence(0, data[0]));
         CString<T> part2(cString.getSubsequence(data[1], cString.getLength() - 1));
         CString<T> *result = (part1.concat(subSequence))->concat(part2);
@@ -571,8 +662,6 @@ void cstring_change() {
     }
 
 }
-
-// Замеряем время работы стека
 void cstringImplementationSpeed(Sequence<wchar_t> *sequence) {
     auto begin = chrono::steady_clock::now();  // Засекаем начало работы
 
@@ -616,7 +705,7 @@ template<class T>
 void main_menu_queue() {
     MenuItem menu_queue[] = {
             {L"Применение функции map, where, reduce - ручной ввод данных",                        apply_map_where_reduce_queue<T>},
-            {L"Конкатенация двух стеков",                                                          queue_concat<T>},
+            {L"Конкатенация двух очередей",                                                          queue_concat<T>},
             {L"Извлечение подпоследовательности (по заданным индексам)",                           queue_getSubSequence<T>},
             {L"Поиск на вхождение подпоследовательности",                                          queue_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", queue_addElementSpeed<T>}};
@@ -627,7 +716,7 @@ template<class T>
 void main_menu_deque() {
     MenuItem menu_deque[] = {
             {L"Применение функции map, where, reduce - ручной ввод данных",                        apply_map_where_reduce_deque<T>},
-            {L"Конкатенация двух стеков",                                                          deque_concat<T>},
+            {L"Конкатенация двух деков",                                                          deque_concat<T>},
             {L"Извлечение подпоследовательности (по заданным индексам)",                           deque_getSubSequence<T>},
             {L"Поиск на вхождение подпоследовательности",                                          deque_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", deque_addElementSpeed<T>}};
@@ -635,9 +724,16 @@ void main_menu_deque() {
 }
 
 template<class T>
+void main_menu_deque_segmented() {
+    MenuItem menu_deque[] = {
+            {L"Базовые операции",                                                                deque_segmented_basic_operations<T>}};
+    menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
+}
+
+template<class T>
 void main_menu_cstring() {
     MenuItem menu_cstring[] = {
-            {L"Конкатенация двух стеков",                                                          cstring_concat<T>},
+            {L"Конкатенация двух строк",                                                          cstring_concat<T>},
             {L"Извлечение подпоследовательности (по заданным индексам)",                           cstring_getSubSequence<T>},
             {L"Поиск на вхождение подпоследовательности",                                          cstring_findSubSequence<T>},
             {L"Сравнение времени добавления элементов в стек на основе LinkedList и DynamicArray", cstring_addElementSpeed<T>},
@@ -656,6 +752,18 @@ void deque_menu() {
                              {L"Строки/символы (string)",             main_menu_deque<wstring>},
                              {L"Студенты/преподаватели",              main_menu_deque<Person>},
                              {L"Функции",              main_menu_deque<FunctionHolder>}};
+    menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
+}
+
+void deque_segmented_menu() {
+    wprintf(L"== Deque-Выберите тип данных ==\n");
+
+    MenuItem menu_deque[] = {{L"Целые числа (int)",                   main_menu_deque_segmented<int>},
+                             {L"Вещественные числа (double)",         main_menu_deque_segmented<double>},
+                             {L"Комплексные числа (complex<double>)", main_menu_deque_segmented<complex<double>>},
+                             {L"Строки/символы (string)",             main_menu_deque_segmented<wstring>},
+                             {L"Студенты/преподаватели",              main_menu_deque_segmented<Person>},
+                             {L"Функции",              main_menu_deque_segmented<FunctionHolder>}};
     menuLoop(L"Возможные операции", _countof(menu_deque), menu_deque);
 }
 
@@ -689,8 +797,6 @@ void CString_menu() {
                                {L"Строки/символы (string)", main_menu_cstring<wstring>}};
     menuLoop(L"Возможные операции", _countof(menu_cstring), menu_cstring);
 }
-// Основные операции с выбранным типом данных
-
 // Основная программа
 int main() {
     // Задаём кодировку UTF-16 для всего вывода в программе
@@ -705,7 +811,8 @@ int main() {
     MenuItem menu[] = {{L"Стек",    stack_menu},
                        {L"Очередь", queue_menu},
                        {L"Дек",     deque_menu},
-                       {L"CString", CString_menu}};
+                       {L"CString", CString_menu},
+                       {L"Сегментированный дек", deque_segmented_menu}};
     try {
         menuLoop(L"Выберите тип элементов", _countof(menu), menu);
     } catch (IndexOutOfRange &ex) {

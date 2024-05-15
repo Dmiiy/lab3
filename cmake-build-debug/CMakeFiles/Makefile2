@@ -173,8 +173,8 @@ CMakeFiles/lab3.dir/clean:
 # Target rules for target Google_tests/CMakeFiles/Google_Tests.dir
 
 # All Build rule for target.
-Google_tests/CMakeFiles/Google_Tests.dir/all: Google_tests/lib/googletest/CMakeFiles/gtest.dir/all
 Google_tests/CMakeFiles/Google_Tests.dir/all: Google_tests/lib/googletest/CMakeFiles/gtest_main.dir/all
+Google_tests/CMakeFiles/Google_Tests.dir/all: Google_tests/lib/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f Google_tests\CMakeFiles\Google_Tests.dir\build.make Google_tests/CMakeFiles/Google_Tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f Google_tests\CMakeFiles\Google_Tests.dir\build.make Google_tests/CMakeFiles/Google_Tests.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\dimak\CLionProjects\lab3\cmake-build-debug\CMakeFiles --progress-num=1,2 "Built target Google_Tests"

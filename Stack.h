@@ -80,7 +80,7 @@ public:
     }
     void print(Stack<FunctionHolder> *stack) {
         wcout << L"Stack size = " <<stack-> data->getLength() << endl;
-        wprintf(L"Ввеите два целых числа: ");
+        wprintf(L"Введите два целых числа: ");
         int a, b;
         wcin >> a >> b;
         for (int i = 0; i <stack-> data->getLength(); i++) {

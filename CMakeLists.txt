@@ -12,7 +12,6 @@ add_executable(lab3
         Common.h
         main.cpp
         menu.h
-        ArraySequenceImmutable.h
         Stack.h
         Deque.h
         person.h
@@ -21,5 +20,6 @@ add_executable(lab3
         Person.h
         FunctionHolder.h
         Functions.h
+        SegmentedDeque.h
 )
 add_subdirectory(Google_tests)
